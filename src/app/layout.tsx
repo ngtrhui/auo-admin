@@ -14,7 +14,7 @@ const inter = Inter({
 
 export const metadata = createPageMetadata({
   title: SITE_NAME,
-  description: 'Trang quản trị HRCV',
+  description: 'Trang quản trị Ầu Ơ',
 });
 
 export const viewport: Viewport = {

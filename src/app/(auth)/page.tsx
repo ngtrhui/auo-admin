@@ -45,7 +45,7 @@ const DashboardPage = () => {
       <div className="flex flex-wrap items-center gap-2 justify-between">
         <div>
           <h1 className="text-2xl font-bold text-black sm:text-3xl">Dashboard</h1>
-          <p className="mt-1 text-sm font-medium text-gray">Chào mừng bạn đến với HRCV Admin!</p>
+          <p className="mt-1 text-sm font-medium text-gray">Chào mừng bạn đến với Ầu Ơ Admin!</p>
         </div>
         <DashboardDateRangeFilter
           className="w-full md:w-auto"
