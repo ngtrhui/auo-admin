@@ -1,40 +1,57 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { signOut, useSession } from 'next-auth/react';
-import { FaRegUser } from 'react-icons/fa6';
-import { HiOutlineLogout } from 'react-icons/hi';
-import Dropdown from '@/components/ui/Dropdown';
-import { showToast } from '@/components/ui/Toaster';
-import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
-import { Button } from '@/components/ui/Button';
-import { isNavItemActive } from '@/config/sidebar-nav';
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import { FaRegUser } from "react-icons/fa6";
+import { HiOutlineLogout } from "react-icons/hi";
+import Dropdown from "@/components/ui/Dropdown";
+import { showToast } from "@/components/ui/Toaster";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import { Button } from "@/components/ui/Button";
+import { isNavItemActive } from "@/config/sidebar-nav";
 // import { unregisterWebPush } from '@/lib/web-push/unsubscribe';
-import { cn } from '@/utils/classNames';
+import { cn } from "@/utils/classNames";
 
 export function HeaderUserMenu() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const user = session?.user;
-  const displayName = user?.name?.trim() || user?.role || 'Admin';
+  const displayName = user?.name?.trim() || user?.role || "ADMIN";
   const [isSigningOut, setIsSigningOut] = useState(false);
+
+  // const onSignOut = async () => {
+  //   if (isSigningOut) return;
+  //   setIsSigningOut(true);
+  //   try {
+  //     // Best-effort: never block logout if push cleanup hangs or fails
+  //     await Promise.race([
+  //       // unregisterWebPush().catch((error) => {
+  //       //   console.error('Failed to unregister web push on logout', error);
+  //       // }),
+  //       new Promise<void>((resolve) => setTimeout(resolve, 2000)),
+  //     ]);
+  //     await signOut();
+  //     showToast("success", "Đăng xuất thành công");
+  //   } finally {
+  //     setIsSigningOut(false);
+  //   }
+  // };
 
   const onSignOut = async () => {
     if (isSigningOut) return;
+
     setIsSigningOut(true);
+
     try {
-      // Best-effort: never block logout if push cleanup hangs or fails
-      await Promise.race([
-        // unregisterWebPush().catch((error) => {
-        //   console.error('Failed to unregister web push on logout', error);
-        // }),
-        new Promise<void>((resolve) => setTimeout(resolve, 2000)),
-      ]);
-      await signOut();
-      showToast('success', 'Đăng xuất thành công');
-    } finally {
+      await signOut({
+        callbackUrl: "/login",
+        redirect: true,
+      });
+    } catch (error) {
+      console.error("[HeaderUserMenu] Sign out failed:", error);
+      showToast("error", "Đăng xuất thất bại. Vui lòng thử lại.");
       setIsSigningOut(false);
     }
   };
@@ -59,7 +76,7 @@ export function HeaderUserMenu() {
           <div className="flex items-center gap-2">
             <div className="relative size-9 shrink-0 overflow-hidden rounded-full border border-gray/15">
               <ImageWithFallback
-                src={user?.avatar || ''}
+                src={user?.avatar || ""}
                 alt={displayName}
                 width={36}
                 height={36}
@@ -67,8 +84,12 @@ export function HeaderUserMenu() {
               />
             </div>
             <div className="hidden min-w-0 text-left sm:block">
-              <p className="truncate text-sm font-semibold leading-tight">{displayName}</p>
-              <p className="truncate text-xs text-gray">{user?.role ?? 'Admin'}</p>
+              <p className="truncate text-sm font-semibold leading-tight">
+                {displayName}
+              </p>
+              <p className="truncate text-xs text-gray">
+                {user?.role ?? "ADMIN"}
+              </p>
             </div>
           </div>
         </Button>
@@ -81,10 +102,10 @@ export function HeaderUserMenu() {
           aria-disabled={isSigningOut}
           tabIndex={isSigningOut ? -1 : undefined}
           className={cn(
-            'flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-black transition-colors hover:bg-primary-light/50',
-            isNavItemActive(pathname, '/profile') &&
-            'bg-primary-light/50 font-semibold text-primary',
-            isSigningOut && 'pointer-events-none opacity-50',
+            "flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-black transition-colors hover:bg-primary-light/50",
+            isNavItemActive(pathname, "/profile") &&
+              "bg-primary-light/50 font-semibold text-primary",
+            isSigningOut && "pointer-events-none opacity-50",
           )}
         >
           <FaRegUser className="size-4 shrink-0" />
@@ -98,12 +119,7 @@ export function HeaderUserMenu() {
           loading={isSigningOut}
           className="justify-start rounded-none font-semibold text-coral hover:bg-coral/10 hover:text-coral/80 disabled:opacity-60"
           onClick={() => void onSignOut()}
-          leftIcon={
-            <HiOutlineLogout
-              className="size-4 shrink-0"
-              aria-hidden
-            />
-          }
+          leftIcon={<HiOutlineLogout className="size-4 shrink-0" aria-hidden />}
         >
           Đăng xuất
         </Button>

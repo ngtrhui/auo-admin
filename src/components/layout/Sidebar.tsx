@@ -23,7 +23,7 @@ export function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const role = session?.user?.role;
-  // const role = 'Admin' as UserRole;
+  // const role = 'ADMIN' as UserRole;
 
   usePendingBadges();
 

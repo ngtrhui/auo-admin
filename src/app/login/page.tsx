@@ -3,12 +3,16 @@
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { PasswordInput } from "@/components/ui/PasswordInput";
+
 import { loginSchema, type LoginInput } from "@/schemas/auth.schema";
+
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+
 import { showToast } from "@/components/ui/Toaster";
 import { getErrorMessage } from "@/utils/helper";
 
@@ -16,6 +20,7 @@ const LOGIN_SUCCESS_TOAST_MS = 1500;
 
 const LoginPage = () => {
   const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -23,14 +28,14 @@ const LoginPage = () => {
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
+      phone: "",
       password: "",
     },
   });
 
   const onSubmit = async (data: LoginInput) => {
     const result = await signIn("credentials", {
-      email: data.email,
+      phone: data.phone,
       password: data.password,
       redirect: false,
     });
@@ -38,7 +43,7 @@ const LoginPage = () => {
     if (result?.error) {
       showToast(
         "error",
-        getErrorMessage(result.error, "Email hoặc mật khẩu không đúng"),
+        getErrorMessage(result.error, "Số điện thoại hoặc mật khẩu không đúng"),
       );
       return;
     }
@@ -49,7 +54,9 @@ const LoginPage = () => {
     }
 
     showToast("success", "Đăng nhập thành công");
+
     await new Promise((resolve) => setTimeout(resolve, LOGIN_SUCCESS_TOAST_MS));
+
     router.replace("/");
     router.refresh();
   };
@@ -77,21 +84,22 @@ const LoginPage = () => {
               <h1 className="text-3xl font-extrabold text-black">
                 Chào mừng bạn trở lại!
               </h1>
+
               <p className="mt-1 text-base text-gray">Đăng nhập để tiếp tục</p>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <Input
-                {...register("email")}
-                type="email"
-                label="Email"
-                placeholder="Email của bạn"
+                {...register("phone")}
+                type="tel"
+                label="Số điện thoại"
+                placeholder="Số điện thoại của bạn"
                 variant="standard"
-                autoComplete="email"
+                autoComplete="tel"
                 fullWidth
                 disabled={isSubmitting}
                 className="text-sm"
-                error={errors.email?.message}
+                error={errors.phone?.message}
               />
 
               <PasswordInput

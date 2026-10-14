@@ -5,7 +5,7 @@ export const API_CONFIG = {
   INTERNAL_URL: process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL,
   ENDPOINTS: {
     AUTH: {
-      LOGIN: '/auth/login',
+      LOGIN: '/auth/staff/login',
       REGISTER: '/auth/register',
       OAUTH_CALLBACK: '/auth/oauth',
       REFRESH_TOKEN: '/auth/refresh-token',
@@ -23,9 +23,10 @@ export const API_CONFIG = {
     },
     ADMIN: {
       PENDING_BADGES: '/admin/pending-badges',
-    },DASHBOARD: {
+    },
+    DASHBOARD: {
       GET_DASHBOARD: '/admin/dashboard',
       EXPORT: '/admin/dashboard/export',
-    },
-  },
+    }
+  }
 };

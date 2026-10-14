@@ -59,12 +59,12 @@ export const MAIN_NAV_ITEMS: SidebarNavItem[] = [
     label: 'Bảng điều khiển',
     href: '/',
     icon: imageNavIcon('/images/icons/icon_home.webp'),
-    roles: ['Admin'],
+    roles: ['ADMIN'],
   },
   {
     label: 'Người dùng',
     icon: imageNavIcon('/images/icons/icon_users.webp'),
-    roles: ['Admin'],
+    roles: ['ADMIN'],
     children: [
       { label: 'Ứng viên', href: '/users' },
       { label: 'Quy trình phỏng vấn', href: '/recruitment-pipeline' },
@@ -73,7 +73,7 @@ export const MAIN_NAV_ITEMS: SidebarNavItem[] = [
   {
     label: 'Danh mục hệ thống',
     icon: reactNavIcon(TbCategory),
-    roles: ['Admin'],
+    roles: ['ADMIN'],
     children: [
       { label: 'Quản lý chuyên ngành', href: '/employer-major' },
       { label: 'Quản lý danh mục công việc', href: '/job-categories' },
