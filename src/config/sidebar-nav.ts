@@ -1,5 +1,6 @@
 import type { IconType } from 'react-icons';
 import { HiOutlineCog6Tooth } from 'react-icons/hi2';
+import { FiUser } from "react-icons/fi";
 import { TbCategory } from 'react-icons/tb';
 import type { AdminPendingCategory } from '@/types/pending-badges';
 import type { UserRole } from '@/types/user';
@@ -63,11 +64,11 @@ export const MAIN_NAV_ITEMS: SidebarNavItem[] = [
   },
   {
     label: 'Người dùng',
-    icon: imageNavIcon('/images/icons/icon_users.webp'),
+    icon: reactNavIcon(FiUser),
     roles: ['ADMIN'],
     children: [
-      { label: 'Ứng viên', href: '/users' },
-      { label: 'Quy trình phỏng vấn', href: '/recruitment-pipeline' },
+      { label: 'Nhân viên', href: '/staffs' },
+      { label: 'Khách hàng', href: '/recruitment-pipeline' },
     ],
   },
   {
