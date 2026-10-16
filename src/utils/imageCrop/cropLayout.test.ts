@@ -4,7 +4,6 @@ import {
   normalizedCropToStageRect,
   type CoverLayout,
 } from './cropLayout';
-import { describe, it, expect } from 'vitest';
 
 const layout: CoverLayout = {
   W: 1000,
