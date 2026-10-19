@@ -1,8 +1,21 @@
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+import { authOptions } from '@/auth';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 
-const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
+  const session = await getServerSession(authOptions);
+
+  if (
+    !session?.user ||
+    !session.token?.accessToken ||
+    session.error === 'RefreshAccessTokenError'
+  ) {
+    redirect('/login');
+  }
+
   return (
     <TooltipProvider delayDuration={200}>
       <main className="flex h-dvh overflow-hidden w-full">

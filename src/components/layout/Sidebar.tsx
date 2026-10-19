@@ -55,8 +55,8 @@ export function Sidebar() {
           className="flex justify-center items-center"
         >
           <Image
-            src="/images/logo/hrcv_logo.png"
-            alt="HRCV"
+            src="/images/logo/auo_logo.png"
+            alt="Ầu Ơ"
             width={132}
             height={54}
             className={cn(
