@@ -1,14 +1,17 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
+import { FiSearch } from "react-icons/fi";
 
 import { showToast } from "@/components/ui/Toaster";
 
+import ListPageLayout from "@/components/list/ListPageLayout";
 import StaffCreateDialog from "@/components/modules/staff/StaffCreateDialog";
-import StaffListPage from "@/components/modules/staff/StaffListPage";
 import StaffPageHeader from "@/components/modules/staff/StaffPageHeader";
 import StaffProfileDialog from "@/components/modules/staff/StaffProfileDialog";
 import StaffStatusDialog from "@/components/modules/staff/StaffStatusDialog";
+import { Input } from "@/components/ui/Input";
+import StaffTable from "@/components/modules/staff/StaffTable";
 import { EMPTY_STAFF_FORM, getTodayDate, INITIAL_STAFF } from "@/data/staff";
 import type {
   StaffForm,
@@ -16,6 +19,12 @@ import type {
   StaffStatus,
   StatusFilter,
 } from "./staff.types";
+
+const STATUS_TABS: { label: string; value: StatusFilter }[] = [
+  { label: "Tất cả", value: "all" },
+  { label: "Đang hoạt động", value: "active" },
+  { label: "Đã vô hiệu hóa", value: "inactive" },
+];
 
 export default function StaffManagement() {
   const [staff, setStaff] = useState(INITIAL_STAFF);
@@ -134,7 +143,8 @@ export default function StaffManagement() {
 
   return (
     <>
-      <StaffListPage
+      <ListPageLayout
+        className="gap-5 pb-4"
         header={
           <StaffPageHeader
             total={staff.length}
@@ -143,19 +153,93 @@ export default function StaffManagement() {
             onCreate={() => setIsCreateOpen(true)}
           />
         }
-        staff={filteredStaff}
-        totalStaff={staff.length}
-        statusCounts={{
-          all: staff.length,
-          active: activeCount,
-          inactive: inactiveCount,
-        }}
-        search={search}
-        onSearchChange={setSearch}
-        statusFilter={statusFilter}
-        onStatusFilterChange={setStatusFilter}
-        onSelectStaff={setSelectedStaff}
-        onToggleStaff={setStaffToToggle}
+        cardClassName="rounded-2xl border border-gray/15 shadow-[0_4px_18px_rgba(30,24,22,0.04)]"
+        filters={
+          <div className="flex flex-col gap-4 border-b border-gray/10 px-4 py-4 sm:px-6 sm:pt-5">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h2 className="text-base font-bold text-black">
+                  Danh sách nhân viên
+                </h2>
+                <p className="mt-1 text-xs text-gray">
+                  Hiển thị {filteredStaff.length} trên {staff.length} nhân viên
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <label className="relative block sm:w-64">
+                  <Input
+                    leftIcon={<FiSearch />}
+                    value={search}
+                    onChange={(event) => setSearch(event.target.value)}
+                    label="Tìm tên nhân viên..."
+                    aria-label="Tìm nhân viên"
+                    className="h-10 w-full bg-white pl-9 pr-3 text-sm text-black outline-none transition"
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div
+              role="tablist"
+              aria-label="Lọc trạng thái nhân viên"
+              className="flex w-full gap-1 overflow-x-auto sm:w-fit"
+            >
+              {STATUS_TABS.map((tab) => {
+                const isSelected = statusFilter === tab.value;
+                const count =
+                  tab.value === "all"
+                    ? staff.length
+                    : tab.value === "active"
+                      ? activeCount
+                      : inactiveCount;
+
+                return (
+                  <button
+                    key={tab.value}
+                    type="button"
+                    role="tab"
+                    aria-selected={isSelected}
+                    onClick={() => setStatusFilter(tab.value)}
+                    className={`inline-flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition ${
+                      isSelected
+                        ? "bg-primary-light text-primary"
+                        : "text-gray hover:bg-[#F8F7F6] hover:text-black"
+                    }`}
+                  >
+                    {tab.label}
+                    <span
+                      className={`rounded-full px-1.5 py-0.5 text-[10px] ${
+                        isSelected
+                          ? "bg-white text-primary"
+                          : "bg-gray/10 text-gray"
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        }
+        table={
+          <StaffTable
+            staff={filteredStaff}
+            onView={setSelectedStaff}
+            onToggleStatus={setStaffToToggle}
+          />
+        }
+        pagination={
+          <div className="flex flex-col gap-2 text-xs text-gray sm:flex-row sm:items-center sm:justify-between">
+            <span>
+              Đang hiển thị{" "}
+              <strong className="font-semibold text-black">
+                {filteredStaff.length}
+              </strong>{" "}
+              nhân viên
+            </span>
+          </div>
+        }
       />
       <StaffCreateDialog
         open={isCreateOpen}
