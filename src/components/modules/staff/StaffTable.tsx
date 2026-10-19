@@ -23,14 +23,12 @@ export default function StaffTable({
   });
 
   return (
-    <div className="min-h-0 flex-1 overflow-auto">
+    <div className="min-h-0 flex-1">
       <Table
         columns={columns}
         data={staff}
-        tableClassName="min-w-[1120px]"
-        headerClassName="!bg-[#FAF9F8] !text-[11px] !font-semibold !uppercase !tracking-wide !text-gray"
-        tableCellClassName="!px-4 !py-4"
-        getRowClassName={() => "hover:bg-[#FCFBFA]"}
+        tableClassName="w-full"
+        scrollContainerClassName="h-full"
       />
     </div>
   );

@@ -109,6 +109,7 @@ export const EMPTY_STAFF_FORM: StaffForm = {
   employeeCode: "",
   fullName: "",
   email: "",
+  password: "",
   phone: "",
   gender: "",
   dateOfBirth: "",

@@ -32,4 +32,6 @@ export type StaffForm = Pick<
   | "role"
   | "position"
   | "hireDate"
->;
+> & {
+  password: string;
+};

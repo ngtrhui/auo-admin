@@ -49,12 +49,9 @@ function StaffProfile({ staff }: { staff: StaffMember }) {
           <h3 className="truncate text-lg font-bold text-black">
             {staff.fullName}
           </h3>
-          <p className="mt-0.5 truncate text-sm text-gray">{staff.position}</p>
+
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <StaffStatusBadge status={staff.status} />
-            <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-primary">
-              {staff.role}
-            </span>
           </div>
         </div>
         <span className="text-xs font-medium text-gray">

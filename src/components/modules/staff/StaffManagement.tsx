@@ -6,11 +6,12 @@ import { showToast } from "@/components/ui/Toaster";
 
 import ListPageLayout from "@/components/list/ListPageLayout";
 import StaffCreateDialog from "@/components/modules/staff/StaffCreateDialog";
-import StaffPageHeader from "@/components/modules/staff/StaffPageHeader";
 import StaffProfileDialog from "@/components/modules/staff/StaffProfileDialog";
 import StaffStatusDialog from "@/components/modules/staff/StaffStatusDialog";
 import StaffListFilters from "@/components/modules/staff/StaffListFilters";
 import StaffTable from "@/components/modules/staff/StaffTable";
+import StaffStatusTabs from "@/components/modules/staff/StaffStatusTabs";
+import StaffPageHeader from "@/components/modules/staff/StaffPageHeader";
 import { Pagination } from "@/components/ui/Pagination";
 import { EMPTY_STAFF_FORM, getTodayDate, INITIAL_STAFF } from "@/data/staff";
 import { useClientPagination } from "@/hooks/list/useClientPagination";
@@ -148,7 +149,6 @@ export default function StaffManagement() {
   return (
     <>
       <ListPageLayout
-        className="gap-5 pb-4"
         header={
           <StaffPageHeader
             total={staff.length}
@@ -157,24 +157,30 @@ export default function StaffManagement() {
             onCreate={() => setIsCreateOpen(true)}
           />
         }
-        cardClassName="rounded-2xl border border-gray/15 shadow-[0_4px_18px_rgba(30,24,22,0.04)]"
         filters={
-          <StaffListFilters
-            search={search}
-            onSearchChange={(value) => {
-              setSearch(value);
-              setCurrentPage(1);
-            }}
-            statusFilter={statusFilter}
-            onStatusFilterChange={(value) => {
-              setStatusFilter(value);
-              setCurrentPage(1);
-            }}
-            total={staff.length}
-            filteredTotal={filteredStaff.length}
-            activeCount={activeCount}
-            inactiveCount={inactiveCount}
-          />
+          <div className="flex items-center justify-between">
+            <div className="shrink-0">
+              <StaffStatusTabs
+                statusFilter={statusFilter}
+                onStatusFilterChange={(value) => {
+                  setStatusFilter(value);
+                  setCurrentPage(1);
+                }}
+                total={staff.length}
+                activeCount={activeCount}
+                inactiveCount={inactiveCount}
+              />
+            </div>
+            <div className="shrink-0">
+              <StaffListFilters
+                search={search}
+                onSearchChange={(value) => {
+                  setSearch(value);
+                  setCurrentPage(1);
+                }}
+              />
+            </div>
+          </div>
         }
         table={
           <StaffTable
