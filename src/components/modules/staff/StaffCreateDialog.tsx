@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import Modal from "@/components/ui/Modal";
 
-import type { StaffForm, StaffRole } from "./staff.types";
+import type { StaffForm } from "./staff.types";
 
 type StaffCreateDialogProps = {
   open: boolean;
@@ -30,8 +30,8 @@ export default function StaffCreateDialog({
     <Modal
       open={open}
       onClose={onClose}
-      title="Cấp tài khoản nhân viên"
-      maxWidth="560px"
+      title="Thêm nhân viên"
+      maxWidth="600px"
       className="w-full"
       contentClassName="max-h-[70vh] overflow-y-auto"
       footer={
@@ -40,7 +40,7 @@ export default function StaffCreateDialog({
             Hủy
           </Button>
           <Button type="submit" form="create-staff-form">
-            Tạo tài khoản
+            Thêm nhân viên
           </Button>
         </>
       }
@@ -50,33 +50,68 @@ export default function StaffCreateDialog({
         onSubmit={onSubmit}
         className="space-y-4 px-5 py-5 sm:px-7"
       >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormField label="Mã nhân viên" required>
+            <input
+              required
+              value={form.employeeCode}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  employeeCode: event.target.value,
+                }))
+              }
+              placeholder="NV-00125"
+              className={inputClassName}
+            />
+          </FormField>
+          <FormField label="Chức vụ" required>
+            <input
+              required
+              value={form.position}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  position: event.target.value,
+                }))
+              }
+              placeholder="Ví dụ: Nhân viên kinh doanh"
+              className={inputClassName}
+            />
+          </FormField>
+        </div>
+
         <FormField label="Họ và tên" required>
           <Input
             required
-            value={form.name}
+            value={form.fullName}
             onChange={(event) =>
-              setForm((current) => ({ ...current, name: event.target.value }))
+              setForm((current) => ({
+                ...current,
+                fullName: event.target.value,
+              }))
             }
             label="Ví dụ: Nguyễn Minh Anh"
             className={inputClassName}
           />
         </FormField>
-        <FormField label="Email" required>
-          <Input
-            required
-            type="email"
-            value={form.email}
-            onChange={(event) =>
-              setForm((current) => ({ ...current, email: event.target.value }))
-            }
-            label="ten@congty.vn"
-            className={inputClassName}
-          />
-        </FormField>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <FormField label="Số điện thoại">
+          <FormField label="Email" required>
+            <Input
+              required
+              type="email"
+              value={form.email}
+              onChange={(event) =>
+                setForm((current) => ({ ...current, email: event.target.value }))
+              }
+              label="ten@congty.vn"
+              className={inputClassName}
+            />
+          </FormField>
+          <FormField label="Số điện thoại" required>
             <input
+              required
               type="tel"
               value={form.phone}
               onChange={(event) =>
@@ -87,25 +122,71 @@ export default function StaffCreateDialog({
             />
           </FormField>
         </div>
-        <FormField label="Vai trò tài khoản" required>
-          <select
-            required
-            value={form.role}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                role: event.target.value as StaffRole,
-              }))
-            }
-            className={inputClassName}
-          >
-            <option value="Nhân viên">Nhân viên</option>
-            <option value="Quản lý">Quản lý</option>
-            <option value="Quản trị viên">Quản trị viên</option>
-          </select>
-        </FormField>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormField label="Giới tính" required>
+            <select
+              required
+              value={form.gender}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  gender: event.target.value,
+                }))
+              }
+              className={inputClassName}
+            >
+              <option value="" disabled>
+                Chọn giới tính
+              </option>
+              <option value="Nam">Nam</option>
+              <option value="Nữ">Nữ</option>
+              <option value="Khác">Khác</option>
+            </select>
+          </FormField>
+          <FormField label="Ngày sinh" required>
+            <input
+              required
+              type="date"
+              value={form.dateOfBirth}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  dateOfBirth: event.target.value,
+                }))
+              }
+              className={inputClassName}
+            />
+          </FormField>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormField label="Ngày vào làm" required>
+            <input
+              required
+              type="date"
+              value={form.hireDate}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  hireDate: event.target.value,
+                }))
+              }
+              className={inputClassName}
+            />
+          </FormField>
+          <FormField label="Vai trò tài khoản" required>
+            <input
+              readOnly
+              value={form.role}
+              className={`${inputClassName} bg-[#F8F7F6]`}
+            />
+          </FormField>
+        </div>
+
         <div className="rounded-lg border border-[#E9E4DF] bg-[#FAF8F6] px-3.5 py-3 text-xs leading-5 text-gray">
-          Tài khoản được tạo sẽ có trạng thái hoạt động trong bản xem trước này.
+          Thông tin hồ sơ lấy từ tài khoản người dùng liên kết. Vai trò hiện
+          được hệ thống hỗ trợ là ADMIN.
         </div>
       </form>
     </Modal>

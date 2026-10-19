@@ -23,8 +23,8 @@ export default function StaffStatusDialog({
       title={isActive ? "Vô hiệu hóa tài khoản?" : "Kích hoạt tài khoản?"}
       message={
         isActive
-          ? `Tài khoản của ${staff?.name} sẽ không thể đăng nhập sau khi vô hiệu hóa.`
-          : `Tài khoản của ${staff?.name} sẽ được phép đăng nhập trở lại.`
+          ? `Tài khoản của ${staff?.fullName} sẽ không thể đăng nhập sau khi vô hiệu hóa.`
+          : `Tài khoản của ${staff?.fullName} sẽ được phép đăng nhập trở lại.`
       }
       confirmText={isActive ? "Vô hiệu hóa" : "Kích hoạt"}
       confirmVariant={isActive ? "danger" : "primary"}

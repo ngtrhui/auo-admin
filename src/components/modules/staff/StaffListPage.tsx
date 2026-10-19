@@ -7,7 +7,7 @@ import ListPageLayout from "@/components/list/ListPageLayout";
 import { Input } from "@/components/ui/Input";
 import Table, { type ColumnDef } from "@/components/ui/Table";
 
-import { getStaffInitials } from "@/data/staff";
+import { formatStaffDate, getStaffInitials } from "@/data/staff";
 import type { StaffMember, StatusFilter } from "./staff.types";
 import StaffStatusBadge from "@/components/modules/staff/StaffStatusBadge";
 
@@ -46,7 +46,7 @@ export default function StaffListPage({
     {
       key: "name",
       label: "Nhân viên",
-      width: 300,
+      width: 250,
       headerClassName: "!justify-start !text-left",
       render: (member) => {
         const index = staff.findIndex((item) => item.id === member.id);
@@ -63,7 +63,7 @@ export default function StaffListPage({
               className={`flex size-10 shrink-0 items-center justify-center rounded-full text-xs font-bold ${avatarClassName}`}
               aria-hidden
             >
-              {getStaffInitials(member.name)}
+              {getStaffInitials(member.fullName)}
             </div>
             <div className="min-w-0">
               <button
@@ -71,21 +71,47 @@ export default function StaffListPage({
                 onClick={() => onSelectStaff(member)}
                 className="max-w-full truncate text-left text-sm font-semibold text-black hover:text-primary hover:underline"
               >
-                {member.name}
+                {member.fullName}
               </button>
-              <p className="mt-0.5 truncate text-xs text-gray">{member.email}</p>
+              <p className="mt-0.5 truncate text-xs text-gray">
+                {member.email}
+              </p>
             </div>
           </div>
         );
       },
     },
     {
-      key: "joinedAt",
-      label: "Ngày vào làm",
-      width: 160,
+      key: "employeeCode",
+      label: "Mã nhân viên",
+      width: 140,
       headerClassName: "!justify-start !text-left",
       render: (member) => (
-        <span className="text-sm text-gray">{member.joinedAt}</span>
+        <span className="text-sm font-medium text-black">
+          {member.employeeCode}
+        </span>
+      ),
+    },
+    {
+      key: "hireDate",
+      label: "Ngày vào làm",
+      width: 135,
+      headerClassName: "!justify-start !text-left",
+      render: (member) => (
+        <span className="text-sm text-gray">
+          {formatStaffDate(member.hireDate)}
+        </span>
+      ),
+    },
+    {
+      key: "resignationDate",
+      label: "Ngày nghỉ việc",
+      width: 145,
+      headerClassName: "!justify-start !text-left",
+      render: (member) => (
+        <span className="text-sm text-gray">
+          {formatStaffDate(member.resignationDate)}
+        </span>
       ),
     },
     {
@@ -106,7 +132,7 @@ export default function StaffListPage({
           <button
             type="button"
             onClick={() => onSelectStaff(member)}
-            aria-label={`Xem hồ sơ ${member.name}`}
+            aria-label={`Xem hồ sơ ${member.fullName}`}
             title="Xem hồ sơ"
             className="inline-flex size-9 items-center justify-center rounded-lg text-gray transition hover:bg-primary-light hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
@@ -117,8 +143,8 @@ export default function StaffListPage({
             onClick={() => onToggleStaff(member)}
             aria-label={
               member.status === "active"
-                ? `Vô hiệu hóa ${member.name}`
-                : `Kích hoạt ${member.name}`
+                ? `Vô hiệu hóa ${member.fullName}`
+                : `Kích hoạt ${member.fullName}`
             }
             title={
               member.status === "active"
@@ -214,7 +240,7 @@ export default function StaffListPage({
             <Table
               columns={columns}
               data={staff}
-              tableClassName="min-w-[840px]"
+              tableClassName="min-w-[1120px]"
               headerClassName="!bg-[#FAF9F8] !text-[11px] !font-semibold !uppercase !tracking-wide !text-gray"
               tableCellClassName="!px-4 !py-4"
               getRowClassName={() => "hover:bg-[#FCFBFA]"}
@@ -240,10 +266,6 @@ export default function StaffListPage({
             Đang hiển thị{" "}
             <strong className="font-semibold text-black">{staff.length}</strong>{" "}
             nhân viên
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <span className="size-1.5 rounded-full bg-[#3D9A68]" />
-            Dữ liệu mẫu · thay đổi chỉ lưu trong phiên hiện tại
           </span>
         </div>
       }

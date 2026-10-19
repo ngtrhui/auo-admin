@@ -9,7 +9,7 @@ import StaffListPage from "@/components/modules/staff/StaffListPage";
 import StaffPageHeader from "@/components/modules/staff/StaffPageHeader";
 import StaffProfileDialog from "@/components/modules/staff/StaffProfileDialog";
 import StaffStatusDialog from "@/components/modules/staff/StaffStatusDialog";
-import { EMPTY_STAFF_FORM, getTodayLabel, INITIAL_STAFF } from "@/data/staff";
+import { EMPTY_STAFF_FORM, getTodayDate, INITIAL_STAFF } from "@/data/staff";
 import type {
   StaffForm,
   StaffMember,
@@ -21,7 +21,6 @@ export default function StaffManagement() {
   const [staff, setStaff] = useState(INITIAL_STAFF);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-  const [departmentFilter, setDepartmentFilter] = useState("all");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [form, setForm] = useState<StaffForm>(EMPTY_STAFF_FORM);
   const [selectedStaff, setSelectedStaff] = useState<StaffMember | null>(null);
@@ -38,18 +37,23 @@ export default function StaffManagement() {
     return staff.filter((member) => {
       const matchesSearch =
         !normalizedSearch ||
-        [member.name, member.email, member.phone, member.id, member.position]
+        [
+          member.fullName,
+          member.email,
+          member.phone,
+          member.employeeCode,
+          String(member.id),
+          String(member.userId),
+          member.position,
+        ]
           .join(" ")
           .toLocaleLowerCase("vi")
           .includes(normalizedSearch);
       const matchesStatus =
         statusFilter === "all" || member.status === statusFilter;
-      const matchesDepartment =
-        departmentFilter === "all" || member.department === departmentFilter;
-
-      return matchesSearch && matchesStatus && matchesDepartment;
+      return matchesSearch && matchesStatus;
     });
-  }, [departmentFilter, search, staff, statusFilter]);
+  }, [search, staff, statusFilter]);
 
   const handleCreateStaff = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -65,22 +69,42 @@ export default function StaffManagement() {
       return;
     }
 
+    const employeeCode = form.employeeCode.trim();
+    if (
+      staff.some(
+        (member) =>
+          member.employeeCode.toLocaleLowerCase("vi") ===
+          employeeCode.toLocaleLowerCase("vi"),
+      )
+    ) {
+      showToast("error", "Mã nhân viên này đã được sử dụng.");
+      return;
+    }
+
+    const createdAt = getTodayDate();
+    const nextId =
+      staff.reduce((largestId, member) => Math.max(largestId, member.id), 0) +
+      1;
     const newStaff: StaffMember = {
-      id: `NV-${String(Date.now()).slice(-5)}`,
-      name: form.name.trim(),
+      id: nextId,
+      userId: nextId,
+      employeeCode,
+      fullName: form.fullName.trim(),
       email,
-      phone: form.phone.trim() || "Chưa cập nhật",
-      department: form.department,
+      phone: form.phone.trim(),
+      gender: form.gender,
+      dateOfBirth: form.dateOfBirth,
       position: form.position.trim(),
       role: form.role,
       status: "active",
-      joinedAt: getTodayLabel(),
-      location: "Chưa cập nhật",
+      hireDate: form.hireDate,
+      resignationDate: null,
+      createdAt,
+      updatedAt: createdAt,
     };
 
     setStaff((currentStaff) => [newStaff, ...currentStaff]);
     setStatusFilter("all");
-    setDepartmentFilter("all");
     setSearch("");
     setForm(EMPTY_STAFF_FORM);
     setIsCreateOpen(false);

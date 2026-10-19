@@ -1,7 +1,7 @@
 import StaffManagement from '@/components/modules/staff/StaffManagement';
 
-const CandidatesPage = () => {
+const StaffsPage = () => {
   return <StaffManagement />;
 };
 
-export default CandidatesPage;
+export default StaffsPage;

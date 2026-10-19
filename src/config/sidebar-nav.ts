@@ -67,8 +67,8 @@ export const MAIN_NAV_ITEMS: SidebarNavItem[] = [
     icon: reactNavIcon(FiUser),
     roles: ['ADMIN'],
     children: [
-      { label: 'Nhân viên', href: '/staffs' },
-      { label: 'Khách hàng', href: '/recruitment-pipeline' },
+      { label: 'Nhân viên', href: '/nhan-vien' },
+      { label: 'Khách hàng', href: '/khach-hang' },
     ],
   },
   {

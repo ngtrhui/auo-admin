@@ -1,10 +1,17 @@
 "use client";
 
-import { FiBriefcase, FiCalendar, FiMail, FiMapPin, FiPhone } from "react-icons/fi";
+import {
+  FiBriefcase,
+  FiCalendar,
+  FiHash,
+  FiMail,
+  FiPhone,
+  FiUser,
+} from "react-icons/fi";
 
 import Modal from "@/components/ui/Modal";
 
-import { getStaffInitials } from "@/data/staff";
+import { formatStaffDate, getStaffInitials } from "@/data/staff";
 import type { StaffMember } from "./staff.types";
 import StaffStatusBadge from "@/components/modules/staff/StaffStatusBadge";
 
@@ -36,10 +43,12 @@ function StaffProfile({ staff }: { staff: StaffMember }) {
     <div className="px-5 py-5 sm:px-7">
       <div className="flex flex-col gap-4 rounded-xl bg-[#FAF8F6] p-4 sm:flex-row sm:items-center sm:p-5">
         <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-[#EDE6E1] text-base font-bold text-primary">
-          {getStaffInitials(staff.name)}
+          {getStaffInitials(staff.fullName)}
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-lg font-bold text-black">{staff.name}</h3>
+          <h3 className="truncate text-lg font-bold text-black">
+            {staff.fullName}
+          </h3>
           <p className="mt-0.5 truncate text-sm text-gray">{staff.position}</p>
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <StaffStatusBadge status={staff.status} />
@@ -48,14 +57,21 @@ function StaffProfile({ staff }: { staff: StaffMember }) {
             </span>
           </div>
         </div>
-        <span className="text-xs font-medium text-gray">{staff.id}</span>
+        <span className="text-xs font-medium text-gray">
+          {staff.employeeCode}
+        </span>
       </div>
 
       <div className="mt-5">
         <h4 className="text-xs font-bold uppercase tracking-wide text-gray">
-          Thông tin cá nhân
+          Thông tin tài khoản người dùng
         </h4>
         <dl className="mt-2 divide-y divide-gray/10">
+          <ProfileField
+            icon={<FiHash />}
+            label="Mã tài khoản"
+            value={String(staff.userId)}
+          />
           <ProfileField icon={<FiMail />} label="Email" value={staff.email} />
           <ProfileField
             icon={<FiPhone />}
@@ -63,19 +79,42 @@ function StaffProfile({ staff }: { staff: StaffMember }) {
             value={staff.phone}
           />
           <ProfileField
-            icon={<FiBriefcase />}
-            label="Phòng ban"
-            value={staff.department}
+            icon={<FiUser />}
+            label="Giới tính"
+            value={staff.gender}
           />
           <ProfileField
-            icon={<FiMapPin />}
-            label="Địa điểm"
-            value={staff.location}
+            icon={<FiCalendar />}
+            label="Ngày sinh"
+            value={formatStaffDate(staff.dateOfBirth)}
+          />
+        </dl>
+      </div>
+
+      <div className="mt-5">
+        <h4 className="text-xs font-bold uppercase tracking-wide text-gray">
+          Thông tin nhân viên
+        </h4>
+        <dl className="mt-2 divide-y divide-gray/10">
+          <ProfileField
+            icon={<FiHash />}
+            label="Mã nhân viên"
+            value={staff.employeeCode}
+          />
+          <ProfileField
+            icon={<FiBriefcase />}
+            label="Chức vụ"
+            value={staff.position}
           />
           <ProfileField
             icon={<FiCalendar />}
             label="Ngày vào làm"
-            value={staff.joinedAt}
+            value={formatStaffDate(staff.hireDate)}
+          />
+          <ProfileField
+            icon={<FiCalendar />}
+            label="Ngày nghỉ việc"
+            value={formatStaffDate(staff.resignationDate)}
           />
         </dl>
       </div>
@@ -97,7 +136,7 @@ function ProfileField({
       <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#F5F3F2] text-gray">
         {icon}
       </span>
-      <dt className="w-28 shrink-0 text-xs text-gray">{label}</dt>
+      <dt className="w-32 shrink-0 text-xs text-gray">{label}</dt>
       <dd className="min-w-0 break-all text-sm font-medium text-black">
         {value}
       </dd>
