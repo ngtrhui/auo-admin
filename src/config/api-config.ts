@@ -24,6 +24,16 @@ export const API_CONFIG = {
     ADMIN: {
       PENDING_BADGES: '/admin/pending-badges',
     },
+    NOTIFICATIONS: {
+      LIST: '/notifications',
+      UNREAD_COUNT: '/notifications/unread-count',
+      MARK_READ: (id: string) => `/notifications/${id}/mark-read`,
+      MARK_ALL_READ: '/notifications/mark-read',
+      DELETE: (id: string) => `/notifications/${id}`,
+      PUSH_VAPID_PUBLIC_KEY: '/notifications/push/vapid-public-key',
+      PUSH_SUBSCRIBE: '/notifications/push/subscribe',
+      PUSH_UNSUBSCRIBE: '/notifications/push/unsubscribe',
+    },
     DASHBOARD: {
       GET_DASHBOARD: '/admin/dashboard',
       EXPORT: '/admin/dashboard/export',

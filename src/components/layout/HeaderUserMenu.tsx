@@ -11,7 +11,7 @@ import { showToast } from "@/components/ui/Toaster";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { Button } from "@/components/ui/Button";
 import { isNavItemActive } from "@/config/sidebar-nav";
-// import { unregisterWebPush } from '@/lib/web-push/unsubscribe';
+import { unregisterWebPush } from '@/lib/web-push/unsubscribe';
 import { cn } from "@/utils/classNames";
 
 export function HeaderUserMenu() {
@@ -21,37 +21,20 @@ export function HeaderUserMenu() {
   const displayName = user?.name?.trim() || user?.role || "ADMIN";
   const [isSigningOut, setIsSigningOut] = useState(false);
 
-  // const onSignOut = async () => {
-  //   if (isSigningOut) return;
-  //   setIsSigningOut(true);
-  //   try {
-  //     // Best-effort: never block logout if push cleanup hangs or fails
-  //     await Promise.race([
-  //       // unregisterWebPush().catch((error) => {
-  //       //   console.error('Failed to unregister web push on logout', error);
-  //       // }),
-  //       new Promise<void>((resolve) => setTimeout(resolve, 2000)),
-  //     ]);
-  //     await signOut();
-  //     showToast("success", "Đăng xuất thành công");
-  //   } finally {
-  //     setIsSigningOut(false);
-  //   }
-  // };
-
   const onSignOut = async () => {
     if (isSigningOut) return;
-
     setIsSigningOut(true);
-
     try {
-      await signOut({
-        callbackUrl: "/login",
-        redirect: true,
-      });
-    } catch (error) {
-      console.error("[HeaderUserMenu] Sign out failed:", error);
-      showToast("error", "Đăng xuất thất bại. Vui lòng thử lại.");
+      // Best-effort: never block logout if push cleanup hangs or fails
+      await Promise.race([
+        unregisterWebPush().catch((error) => {
+          console.error("Failed to unregister web push on logout", error);
+        }),
+        new Promise<void>((resolve) => setTimeout(resolve, 2000)),
+      ]);
+      await signOut();
+      showToast("success", "Đăng xuất thành công");
+    } finally {
       setIsSigningOut(false);
     }
   };
