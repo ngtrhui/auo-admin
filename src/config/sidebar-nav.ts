@@ -72,6 +72,15 @@ export const MAIN_NAV_ITEMS: SidebarNavItem[] = [
     ],
   },
   {
+    label: 'Quản lý sản xuất',
+    icon: reactNavIcon(HiOutlineCog6Tooth),
+    roles: ['ADMIN'],
+    children: [
+      { label: 'Chất liệu', href: '/chat-lieu' },
+      { label: 'Pattern', href: '/pattern' },
+    ],
+  },
+  {
     label: 'Danh mục hệ thống',
     icon: reactNavIcon(TbCategory),
     roles: ['ADMIN'],

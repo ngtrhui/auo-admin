@@ -26,10 +26,8 @@ export default function CustomerTable({
       <Table
         columns={columns}
         data={customers}
-        tableClassName="min-w-[1160px]"
-        headerClassName="!bg-[#FAF9F8] !text-[11px] !font-semibold !uppercase !tracking-wide !text-gray"
-        tableCellClassName="!px-4 !py-4"
-        getRowClassName={() => "hover:bg-[#FCFBFA]"}
+        tableClassName="w-full"
+        scrollContainerClassName="h-full"
       />
     </div>
   );
