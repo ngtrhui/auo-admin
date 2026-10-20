@@ -33,7 +33,6 @@ export function useStaffColumns({
         label: "Nhân viên",
         width: 250,
         align: "left",
-        headerClassName: "!justify-start !text-left",
         render: (member) => {
           const index = staff.findIndex((item) => item.id === member.id);
           const avatarClassName =
@@ -71,7 +70,6 @@ export function useStaffColumns({
       col.accessor("employeeCode", {
         label: "Mã nhân viên",
         width: 140,
-        headerClassName: "!justify-start !text-left",
         render: (employeeCode) => (
           <span className="text-sm font-medium text-black">{employeeCode}</span>
         ),
@@ -80,7 +78,6 @@ export function useStaffColumns({
       col.accessor("hireDate", {
         label: "Ngày vào làm",
         width: 135,
-        headerClassName: "!justify-start !text-left",
         render: (hireDate) => (
           <span className="text-sm text-gray">{formatStaffDate(hireDate)}</span>
         ),
@@ -89,7 +86,6 @@ export function useStaffColumns({
       col.accessor("resignationDate", {
         label: "Ngày nghỉ việc",
         width: 145,
-        headerClassName: "!justify-start !text-left",
         render: (resignationDate) => (
           <span className="text-sm text-gray">
             {formatStaffDate(resignationDate)}
@@ -101,7 +97,6 @@ export function useStaffColumns({
         label: "Trạng thái",
         width: 180,
         align: "left",
-        headerClassName: "!justify-start !text-left",
         render: (member) => {
           const isActive = member.status === "active";
 
@@ -129,7 +124,6 @@ export function useStaffColumns({
         label: "Thao tác",
         width: 120,
         align: "right",
-        headerClassName: "!justify-end !text-right",
         render: (member) => {
           const isActive = member.status === "active";
 

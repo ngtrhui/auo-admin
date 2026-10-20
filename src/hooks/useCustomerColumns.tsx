@@ -1,10 +1,11 @@
 "use client";
 
-import { FiEye, FiUserCheck, FiUserX } from "react-icons/fi";
+import { FiUserCheck, FiUserX } from "react-icons/fi";
 
 import type { ColumnDef } from "@/components/ui/table.types";
 import { createColumnHelper } from "@/hooks/list/createColumnHelper";
 import { useListColumns } from "@/hooks/list/useListColumns";
+import { cn } from "@/utils/classNames";
 
 import {
   CUSTOMER_STATUS_LABELS,
@@ -13,6 +14,7 @@ import {
 } from "@/data/customers";
 
 import type { Customer } from "@/components/modules/customer/user.types";
+import { Button } from "@/components/ui/Button";
 
 interface UseCustomerColumnsParams {
   customers: Customer[];
@@ -32,7 +34,7 @@ export function useCustomerColumns({
       col.display("name", {
         label: "Khách hàng",
         align: "left",
-        headerClassName: "!justify-start !text-left",
+        width: 200,
         render: (customer) => {
           const index = customers.findIndex((item) => item.id === customer.id);
 
@@ -56,7 +58,7 @@ export function useCustomerColumns({
                 <button
                   type="button"
                   onClick={() => onView(customer)}
-                  className="max-w-full truncate text-left text-sm font-semibold text-black hover:text-primary hover:underline"
+                  className="max-w-full truncate cursor-pointer text-left text-sm font-semibold text-black hover:text-primary hover:underline"
                 >
                   {customer.name}
                 </button>
@@ -73,7 +75,7 @@ export function useCustomerColumns({
       col.display("email", {
         label: "Thông tin liên hệ",
         align: "left",
-        headerClassName: "!justify-start !text-left",
+        width: 200,
         render: (customer) => (
           <div className="min-w-0">
             <p className="truncate text-sm text-black">{customer.email}</p>
@@ -85,7 +87,7 @@ export function useCustomerColumns({
       col.display("address", {
         label: "Địa chỉ",
         align: "left",
-        headerClassName: "!justify-start !text-left",
+        width: 200,
         render: (customer) => (
           <span className="line-clamp-2 text-sm text-gray">
             {getCustomerAddress(customer.address)}
@@ -96,7 +98,7 @@ export function useCustomerColumns({
       col.display("createdAt", {
         label: "Ngày tham gia",
         align: "left",
-        headerClassName: "!justify-start !text-left",
+        width: 100,
         render: (customer) => (
           <span className="text-sm text-gray">{customer.createdAt}</span>
         ),
@@ -105,7 +107,7 @@ export function useCustomerColumns({
       col.display("status", {
         label: "Trạng thái",
         align: "left",
-        headerClassName: "!justify-start !text-left",
+        width: 150,
         render: (customer) => {
           const isActive = customer.status === "active";
 
@@ -131,24 +133,15 @@ export function useCustomerColumns({
       col.display("actions", {
         label: "Thao tác",
         align: "right",
-        headerClassName: "!justify-end !text-right",
+        width: 100,
         render: (customer) => {
           const isActive = customer.status === "active";
 
           return (
-            <div className="flex items-center justify-end gap-1">
-              <button
+            <div className="flex items-center justify-center gap-1">
+              <Button
                 type="button"
-                onClick={() => onView(customer)}
-                aria-label={`Xem hồ sơ ${customer.name}`}
-                title="Xem hồ sơ"
-                className="inline-flex size-9 items-center justify-center rounded-lg text-gray transition hover:bg-primary-light hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              >
-                <FiEye className="size-4" aria-hidden />
-              </button>
-
-              <button
-                type="button"
+                variant="outline"
                 onClick={() => onToggleStatus(customer)}
                 aria-label={
                   isActive
@@ -158,18 +151,19 @@ export function useCustomerColumns({
                 title={
                   isActive ? "Vô hiệu hóa tài khoản" : "Kích hoạt tài khoản"
                 }
-                className={`inline-flex size-9 items-center justify-center rounded-lg text-gray transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                className={cn(
+                  "inline-flex size-9 items-center justify-center rounded-lg text-gray transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                   isActive
                     ? "hover:bg-[#FFF0ED] hover:text-[#C86F5E]"
-                    : "hover:bg-[#E8F5EF] hover:text-[#32845A]"
-                }`}
+                    : "hover:bg-[#E8F5EF] hover:text-[#32845A]",
+                )}
               >
                 {isActive ? (
                   <FiUserX className="size-4" aria-hidden />
                 ) : (
                   <FiUserCheck className="size-4" aria-hidden />
                 )}
-              </button>
+              </Button>
             </div>
           );
         },

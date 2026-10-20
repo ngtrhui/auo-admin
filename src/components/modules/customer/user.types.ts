@@ -19,3 +19,10 @@ export type Customer = {
   updatedAt: string;
   status: CustomerStatus;
 };
+
+export type CustomerForm = Pick<
+  Customer,
+  "name" | "email" | "phone" | "gender" | "dateOfBirth" | "address"
+> & {
+  password: string;
+};
