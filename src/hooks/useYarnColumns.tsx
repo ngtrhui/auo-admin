@@ -29,6 +29,15 @@ export function useYarnColumns({
           <span className="font-medium text-black text-sm">{name}</span>
         ),
       }),
+      col.accessor("patternType", {
+        label: "Kiểu mẫu",
+        width: 170,
+        render: (patternType) => (
+          <span className="text-sm text-black">
+            {patternType.length > 0 ? patternType.join(", ") : "—"}
+          </span>
+        ),
+      }),
       col.accessor("description", {
         label: "Mô tả",
         width: 260,

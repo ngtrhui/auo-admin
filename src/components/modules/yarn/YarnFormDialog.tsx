@@ -5,7 +5,9 @@ import type { Dispatch, FormEvent, ReactNode, SetStateAction } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import Modal from "@/components/ui/Modal";
+import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
+import { YARN_PATTERN_TYPES } from "@/data/yarn";
 import type { YarnForm } from "./yarn.types";
 
 interface YarnFormDialogProps {
@@ -61,6 +63,29 @@ export default function YarnFormDialog({
             className="h-10"
           />
         </FormField>
+        <FormField label="Kiểu mẫu">
+          <Select
+            selectionMode="multiple"
+            options={YARN_PATTERN_TYPES.map((type) => ({
+              value: type,
+              label: type,
+            }))}
+            value={form.patternType}
+            onChange={(patternType) =>
+              onChange((current) => ({
+                ...current,
+                patternType: patternType.filter(
+                  (type): type is (typeof YARN_PATTERN_TYPES)[number] =>
+                    YARN_PATTERN_TYPES.some((validType) => validType === type),
+                ),
+              }))
+            }
+            ariaLabel="Kiểu mẫu"
+            className="h-10 w-full"
+            popoverZIndex={110}
+          />
+        </FormField>
+
         <FormField label="Mô tả">
           <Textarea
             value={form.description}

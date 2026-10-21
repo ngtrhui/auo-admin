@@ -11,13 +11,14 @@ import YarnFormDialog from "@/components/modules/yarn/YarnFormDialog";
 import YarnListFilters from "@/components/modules/yarn/YarnListFilters";
 import YarnPageHeader from "@/components/modules/yarn/YarnPageHeader";
 import YarnTable from "@/components/modules/yarn/YarnTable";
-import { INITIAL_YARNS, YARN_TYPES } from "@/data/yarn";
+import { INITIAL_YARNS, YARN_PATTERN_TYPES, YARN_TYPES } from "@/data/yarn";
 import type { Yarn, YarnForm } from "./yarn.types";
 
 const emptyYarnForm = (): YarnForm => ({
   code: "",
   name: "",
   type: YARN_TYPES[0],
+  patternType: [],
   description: "",
 });
 
@@ -37,7 +38,13 @@ export default function YarnManagement() {
     return yarns.filter((yarn) => {
       const matchesSearch =
         !query ||
-        [yarn.code, yarn.name, yarn.type, yarn.description]
+        [
+          yarn.code,
+          yarn.name,
+          yarn.type,
+          yarn.patternType.join(" "),
+          yarn.description,
+        ]
           .join(" ")
           .toLocaleLowerCase("vi")
           .includes(query);
@@ -71,6 +78,7 @@ export default function YarnManagement() {
       code: yarn.code,
       name: yarn.name,
       type: yarn.type,
+      patternType: yarn.patternType,
       description: yarn.description,
     });
     setIsDialogOpen(true);
@@ -96,6 +104,15 @@ export default function YarnManagement() {
       return;
     }
 
+    if (
+      !form.patternType.every((patternType) =>
+        YARN_PATTERN_TYPES.some((validType) => validType === patternType),
+      )
+    ) {
+      showToast("error", "Kiểu mẫu không hợp lệ.");
+      return;
+    }
+
     if (editingYarn) {
       setYarns((current) =>
         current.map((yarn) =>
@@ -115,7 +132,13 @@ export default function YarnManagement() {
       const id =
         yarns.reduce((largest, yarn) => Math.max(largest, yarn.id), 0) + 1;
       setYarns((current) => [
-        { id, ...form, code, name, description: form.description.trim() },
+        {
+          id,
+          ...form,
+          code,
+          name,
+          description: form.description.trim(),
+        },
         ...current,
       ]);
       setTypeFilter("all");

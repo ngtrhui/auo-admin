@@ -1,7 +1,6 @@
 import type { IconType } from 'react-icons';
-import { HiOutlineCog6Tooth } from 'react-icons/hi2';
 import { FiUser } from "react-icons/fi";
-import { TbCategory } from 'react-icons/tb';
+import { PiYarn } from "react-icons/pi";
 import type { AdminPendingCategory } from '@/types/pending-badges';
 import type { UserRole } from '@/types/user';
 
@@ -72,28 +71,11 @@ export const MAIN_NAV_ITEMS: SidebarNavItem[] = [
     ],
   },
   {
-    label: 'Quản lý sản xuất',
-    icon: reactNavIcon(HiOutlineCog6Tooth),
+    label: 'Quản lý chất liệu',
+    icon: reactNavIcon(PiYarn ),
     roles: ['ADMIN'],
-    children: [
-      { label: 'Chất liệu', href: '/chat-lieu' },
-      { label: 'Pattern', href: '/pattern' },
-    ],
-  },
-  {
-    label: 'Danh mục hệ thống',
-    icon: reactNavIcon(TbCategory),
-    roles: ['ADMIN'],
-    children: [
-      { label: 'Quản lý chuyên ngành', href: '/employer-major' },
-      { label: 'Quản lý danh mục công việc', href: '/job-categories' },
-      { label: 'Quản lý vị trí công việc', href: '/job-roles' },
-      { label: 'Quản lý cấp bậc', href: '/employee-levels' },
-      { label: 'Quản lý quốc gia', href: '/country' },
-      { label: 'Quản lý thành phố', href: '/cities' },
-      { label: 'Quản lý quận/huyện', href: '/districts' },
-      { label: 'Từ khóa việc làm', href: '/seo-keyword-link' },
-    ],
+    href: '/chat-lieu'
+   
   },
 ];
 
