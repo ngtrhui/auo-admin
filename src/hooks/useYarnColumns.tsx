@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/Button";
 import type { ColumnDef } from "@/components/ui/table.types";
 import { createColumnHelper } from "@/hooks/list/createColumnHelper";
 import { useListColumns } from "@/hooks/list/useListColumns";
+import type { Pattern } from "@/components/modules/pattern/pattern.types";
 import type { Yarn } from "@/components/modules/yarn/yarn.types";
 
 interface UseYarnColumnsParams {
   onEdit: (yarn: Yarn) => void;
   onDelete: (yarn: Yarn) => void;
+  patterns: Pattern[];
 }
 
 const col = createColumnHelper<Yarn>();
@@ -18,7 +20,12 @@ const col = createColumnHelper<Yarn>();
 export function useYarnColumns({
   onEdit,
   onDelete,
+  patterns,
 }: UseYarnColumnsParams): ColumnDef<Yarn>[] {
+  const patternNames = new Map(
+    patterns.map((pattern) => [pattern.id, pattern.name]),
+  );
+
   return useListColumns(
     () => [
       col.accessor("name", {
@@ -29,12 +36,16 @@ export function useYarnColumns({
           <span className="font-medium text-black text-sm">{name}</span>
         ),
       }),
-      col.accessor("patternType", {
+      col.accessor("patternIds", {
         label: "Kiểu mẫu",
         width: 170,
-        render: (patternType) => (
+        render: (patternIds) => (
           <span className="text-sm text-black">
-            {patternType.length > 0 ? patternType.join(", ") : "—"}
+            {patternIds.length > 0
+              ? patternIds
+                  .map((id) => patternNames.get(id) ?? id)
+                  .join(", ")
+              : "—"}
           </span>
         ),
       }),
@@ -73,6 +84,6 @@ export function useYarnColumns({
         ),
       }),
     ],
-    [onEdit, onDelete],
+    [onEdit, onDelete, patternNames],
   );
 }

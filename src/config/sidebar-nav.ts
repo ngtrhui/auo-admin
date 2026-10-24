@@ -1,5 +1,6 @@
 import type { IconType } from 'react-icons';
-import { FiUser } from "react-icons/fi";
+import {  FiUser } from "react-icons/fi";
+import { TbGridPattern } from "react-icons/tb";
 import { PiYarn } from "react-icons/pi";
 import type { AdminPendingCategory } from '@/types/pending-badges';
 import type { UserRole } from '@/types/user';
@@ -61,21 +62,32 @@ export const MAIN_NAV_ITEMS: SidebarNavItem[] = [
     icon: imageNavIcon('/images/icons/icon_home.webp'),
     roles: ['ADMIN'],
   },
+  // {
+  //   label: 'Người dùng',
+  //   icon: reactNavIcon(FiUser),
+  //   roles: ['ADMIN'],
+  //   children: [
+  //     { label: 'Nhân viên', href: '/nhan-vien' },
+  //     { label: 'Khách hàng', href: '/khach-hang' },
+  //   ],
+  // },
   {
-    label: 'Người dùng',
+    label: 'Nhân viên',
     icon: reactNavIcon(FiUser),
     roles: ['ADMIN'],
-    children: [
-      { label: 'Nhân viên', href: '/nhan-vien' },
-      { label: 'Khách hàng', href: '/khach-hang' },
-    ],
+    href: '/nhan-vien',
   },
   {
-    label: 'Quản lý chất liệu',
+    label: 'Chất liệu',
     icon: reactNavIcon(PiYarn ),
     roles: ['ADMIN'],
-    href: '/chat-lieu'
-   
+    href: '/chat-lieu',
+  },
+  {
+    label: 'Kiểu mẫu',
+    icon: reactNavIcon(TbGridPattern),
+    roles: ['ADMIN'],
+    href: '/kieu-mau'
   },
 ];
 

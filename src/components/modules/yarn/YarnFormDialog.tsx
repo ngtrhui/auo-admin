@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/Input";
 import Modal from "@/components/ui/Modal";
 import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
-import { YARN_PATTERN_TYPES } from "@/data/yarn";
+import type { Pattern } from "@/components/modules/pattern/pattern.types";
 import type { YarnForm } from "./yarn.types";
 
 interface YarnFormDialogProps {
@@ -17,6 +17,7 @@ interface YarnFormDialogProps {
   onClose: () => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   isEditing: boolean;
+  patterns: Pattern[];
 }
 
 export default function YarnFormDialog({
@@ -26,6 +27,7 @@ export default function YarnFormDialog({
   onClose,
   onSubmit,
   isEditing,
+  patterns,
 }: YarnFormDialogProps) {
   return (
     <Modal
@@ -66,17 +68,16 @@ export default function YarnFormDialog({
         <FormField label="Kiểu mẫu">
           <Select
             selectionMode="multiple"
-            options={YARN_PATTERN_TYPES.map((type) => ({
-              value: type,
-              label: type,
+            options={patterns.map((type) => ({
+              value: type.id,
+              label: type.name,
             }))}
-            value={form.patternType}
-            onChange={(patternType) =>
+            value={form.patternIds}
+            onChange={(patternIds) =>
               onChange((current) => ({
                 ...current,
-                patternType: patternType.filter(
-                  (type): type is (typeof YARN_PATTERN_TYPES)[number] =>
-                    YARN_PATTERN_TYPES.some((validType) => validType === type),
+                patternIds: patternIds.filter((type) =>
+                  patterns.some((validType) => validType.id === type),
                 ),
               }))
             }
@@ -98,7 +99,6 @@ export default function YarnFormDialog({
             maxLength={500}
             rows={3}
             placeholder="Nhập mô tả (không bắt buộc)"
-            className="w-full resize-y rounded-lg border border-gray/20 px-4 py-3 text-sm text-black outline-none placeholder:text-gray focus:border-primary focus:ring-1 focus:ring-primary"
           />
         </FormField>
       </form>

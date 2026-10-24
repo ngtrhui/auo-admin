@@ -1,7 +1,6 @@
 import type { Yarn } from "../components/modules/yarn/yarn.types";
 
 export const YARN_TYPES = ["40s micro", "60s", "100s", "Dệt kim"];
-export const YARN_PATTERN_TYPES = ["Mẫu trơn", "Mẫu họa tiết"] as const;
 
 export const INITIAL_YARNS: Yarn[] = [
   {
@@ -9,7 +8,7 @@ export const INITIAL_YARNS: Yarn[] = [
     code: "YRN-040M",
     name: "Chất liệu 40s micro",
     type: "40s micro",
-    patternType: ["Mẫu trơn"],
+    patternIds: ["mau-tron"],
     description: "Sợi 40s micro",
   },
   {
@@ -17,7 +16,7 @@ export const INITIAL_YARNS: Yarn[] = [
     code: "YRN-060",
     name: "Chất liệu 60s",
     type: "60s",
-    patternType: ["Mẫu trơn"],
+    patternIds: ["mau-tron"],
     description: "Sợi 60s",
   },
   {
@@ -25,7 +24,7 @@ export const INITIAL_YARNS: Yarn[] = [
     code: "YRN-100",
     name: "Chất liệu 100s",
     type: "100s",
-    patternType: ["Mẫu trơn"],
+    patternIds: ["mau-tron"],
     description: "Sợi 100s",
   },
   {
@@ -33,7 +32,7 @@ export const INITIAL_YARNS: Yarn[] = [
     code: "YRN-KNIT",
     name: "Chất liệu dệt kim",
     type: "Dệt kim",
-    patternType: [],
+    patternIds: [],
     description: "Sợi dùng cho sản phẩm dệt kim",
   },
 ];

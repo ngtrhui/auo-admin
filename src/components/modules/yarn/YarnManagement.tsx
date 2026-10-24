@@ -11,18 +11,20 @@ import YarnFormDialog from "@/components/modules/yarn/YarnFormDialog";
 import YarnListFilters from "@/components/modules/yarn/YarnListFilters";
 import YarnPageHeader from "@/components/modules/yarn/YarnPageHeader";
 import YarnTable from "@/components/modules/yarn/YarnTable";
-import { INITIAL_YARNS, YARN_PATTERN_TYPES, YARN_TYPES } from "@/data/yarn";
+import { INITIAL_YARNS, YARN_TYPES } from "@/data/yarn";
+import { usePatterns } from "@/hooks/usePatterns";
 import type { Yarn, YarnForm } from "./yarn.types";
 
 const emptyYarnForm = (): YarnForm => ({
   code: "",
   name: "",
   type: YARN_TYPES[0],
-  patternType: [],
+  patternIds: [],
   description: "",
 });
 
 export default function YarnManagement() {
+  const { patterns } = usePatterns();
   const [yarns, setYarns] = useState(INITIAL_YARNS);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -42,7 +44,12 @@ export default function YarnManagement() {
           yarn.code,
           yarn.name,
           yarn.type,
-          yarn.patternType.join(" "),
+          yarn.patternIds
+            .map(
+              (id) =>
+                patterns.find((pattern) => pattern.id === id)?.name ?? id,
+            )
+            .join(" "),
           yarn.description,
         ]
           .join(" ")
@@ -52,7 +59,7 @@ export default function YarnManagement() {
         matchesSearch && (typeFilter === "all" || yarn.type === typeFilter)
       );
     });
-  }, [search, typeFilter, yarns]);
+  }, [patterns, search, typeFilter, yarns]);
 
   const { pageItems, totalItems, totalPages } = useClientPagination(
     filteredYarns,
@@ -78,7 +85,7 @@ export default function YarnManagement() {
       code: yarn.code,
       name: yarn.name,
       type: yarn.type,
-      patternType: yarn.patternType,
+      patternIds: yarn.patternIds,
       description: yarn.description,
     });
     setIsDialogOpen(true);
@@ -105,8 +112,8 @@ export default function YarnManagement() {
     }
 
     if (
-      !form.patternType.every((patternType) =>
-        YARN_PATTERN_TYPES.some((validType) => validType === patternType),
+      !form.patternIds.every((patternId) =>
+        patterns.some((pattern) => pattern.id === patternId),
       )
     ) {
       showToast("error", "Kiểu mẫu không hợp lệ.");
@@ -177,6 +184,7 @@ export default function YarnManagement() {
             yarns={pageItems}
             onEdit={openEditDialog}
             onDelete={setYarnToDelete}
+            patterns={patterns}
           />
         }
         pagination={
@@ -200,6 +208,7 @@ export default function YarnManagement() {
         onClose={closeDialog}
         onSubmit={handleSubmit}
         isEditing={editingYarn !== null}
+        patterns={patterns}
       />
       <ConfirmDialog
         open={yarnToDelete !== null}
