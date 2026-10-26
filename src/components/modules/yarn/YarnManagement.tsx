@@ -11,8 +11,9 @@ import YarnFormDialog from "@/components/modules/yarn/YarnFormDialog";
 import YarnListFilters from "@/components/modules/yarn/YarnListFilters";
 import YarnPageHeader from "@/components/modules/yarn/YarnPageHeader";
 import YarnTable from "@/components/modules/yarn/YarnTable";
-import { INITIAL_YARNS, YARN_TYPES } from "@/data/yarn";
+import { YARN_TYPES } from "@/data/yarn";
 import { usePatterns } from "@/hooks/usePatterns";
+import { useYarns } from "@/hooks/useYarns";
 import type { Yarn, YarnForm } from "./yarn.types";
 
 const emptyYarnForm = (): YarnForm => ({
@@ -25,7 +26,7 @@ const emptyYarnForm = (): YarnForm => ({
 
 export default function YarnManagement() {
   const { patterns } = usePatterns();
-  const [yarns, setYarns] = useState(INITIAL_YARNS);
+  const { yarns, setYarns } = useYarns();
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);

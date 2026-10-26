@@ -6,7 +6,7 @@ export const INITIAL_YARNS: Yarn[] = [
   {
     id: 1,
     code: "YRN-040M",
-    name: "Chất liệu 40s micro",
+    name: "40s micro",
     type: "40s micro",
     patternIds: ["mau-tron"],
     description: "Sợi 40s micro",
@@ -14,7 +14,7 @@ export const INITIAL_YARNS: Yarn[] = [
   {
     id: 2,
     code: "YRN-060",
-    name: "Chất liệu 60s",
+    name: "60s",
     type: "60s",
     patternIds: ["mau-tron"],
     description: "Sợi 60s",
@@ -22,7 +22,7 @@ export const INITIAL_YARNS: Yarn[] = [
   {
     id: 3,
     code: "YRN-100",
-    name: "Chất liệu 100s",
+    name: "100s",
     type: "100s",
     patternIds: ["mau-tron"],
     description: "Sợi 100s",
@@ -30,7 +30,7 @@ export const INITIAL_YARNS: Yarn[] = [
   {
     id: 4,
     code: "YRN-KNIT",
-    name: "Chất liệu dệt kim",
+    name: "dệt kim",
     type: "Dệt kim",
     patternIds: [],
     description: "Sợi dùng cho sản phẩm dệt kim",
