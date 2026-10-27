@@ -1,5 +1,5 @@
 import type { IconType } from 'react-icons';
-import { FiPackage, FiUser } from "react-icons/fi";
+import { FiDollarSign, FiPackage, FiUser } from "react-icons/fi";
 import { TbGridPattern } from "react-icons/tb";
 import { PiYarn } from "react-icons/pi";
 import type { AdminPendingCategory } from '@/types/pending-badges';
@@ -82,6 +82,12 @@ export const MAIN_NAV_ITEMS: SidebarNavItem[] = [
     icon: reactNavIcon(FiPackage),
     roles: ['ADMIN'],
     href: '/san-pham',
+  },
+  {
+    label: 'Bảng giá',
+    icon: reactNavIcon(FiDollarSign),
+    roles: ['ADMIN'],
+    href: '/gia',
   },
   {
     label: 'Chất liệu',

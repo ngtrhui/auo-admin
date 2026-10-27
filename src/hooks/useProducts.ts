@@ -12,7 +12,7 @@ import {
   PRODUCT_CATEGORIES,
   type Product,
 } from "@/components/modules/product/product.types";
-import { getProductSize } from "@/components/modules/product/product.utils";
+import { getProductSize } from "@/utils/product.utils";
 
 function isProductSize(value: unknown): value is "1m6" | "1m8" {
   return value === "1m6" || value === "1m8";

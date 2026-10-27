@@ -1,36 +1,29 @@
 "use client";
 
 import {
-  useRef,
-  useMemo,
   useState,
   type Dispatch,
   type FormEvent,
-  type ReactNode,
   type SetStateAction,
 } from "react";
-import {
-  FiChevronDown,
-  FiImage,
-  FiTrash2,
-  FiUploadCloud,
-} from "react-icons/fi";
+import { FiChevronDown } from "react-icons/fi";
 
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Input } from "@/components/ui/Input";
 import Modal from "@/components/ui/Modal";
-import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
-import { showToast } from "@/components/ui/Toaster";
 import type { Pattern } from "@/components/modules/pattern/pattern.types";
 import type { Yarn } from "@/components/modules/yarn/yarn.types";
-import { finalizeImageForUpload } from "@/utils/compressImage";
-import type { ProductFormState } from "./product.types";
-import { PRODUCT_CATEGORIES, PRODUCT_SIZES } from "./product.types";
-import { getAvailableComboSizes } from "./product.utils";
-
-const MAX_PRODUCT_IMAGE_BYTES = 10 * 1024 * 1024;
+import FormField from "@/components/modules/product/ProductFormField";
+import ProductGeneralFields from "@/components/modules/product/ProductGeneralFields";
+import ProductImagePicker from "@/components/modules/product/ProductImagePicker";
+import type { ProductFormState } from "@/components/modules/product/product.types";
+import {
+  PRODUCT_CATEGORIES,
+  PRODUCT_SIZES,
+} from "@/components/modules/product/product.types";
+import { getAvailableComboSizes } from "@/utils/product.utils";
 
 interface ProductFormDialogProps {
   open: boolean;
@@ -53,8 +46,6 @@ export default function ProductFormDialog({
   yarns,
   patterns,
 }: ProductFormDialogProps) {
-  const imageInputRef = useRef<HTMLInputElement>(null);
-  const [isProcessingImage, setIsProcessingImage] = useState(false);
   const [areCategoriesExpanded, setAreCategoriesExpanded] = useState(true);
   const availableComboSizes = getAvailableComboSizes({
     categories: form.categories,
@@ -62,52 +53,6 @@ export default function ProductFormDialog({
     drapStocks: form.drapStocks,
     categoryStocks: form.categoryStocks,
   });
-  const yarnOptions = useMemo(
-    () =>
-      yarns.map((yarn) => ({
-        value: String(yarn.id),
-        label: yarn.name,
-      })),
-    [yarns],
-  );
-  const patternOptions = useMemo(
-    () =>
-      patterns.map((pattern) => ({
-        value: pattern.id,
-        label: pattern.name,
-      })),
-    [patterns],
-  );
-
-  const handleImageChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) return;
-
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-      showToast("error", "Ảnh sản phẩm chỉ nhận định dạng JPG, PNG hoặc WebP.");
-      return;
-    }
-    if (file.size > MAX_PRODUCT_IMAGE_BYTES) {
-      showToast("error", "Ảnh sản phẩm không được lớn hơn 10 MB.");
-      return;
-    }
-
-    setIsProcessingImage(true);
-    try {
-      const optimizedImage = await finalizeImageForUpload(file);
-      const imageData = await readFileAsDataUrl(optimizedImage);
-      onChange((current) => ({ ...current, image: imageData }));
-    } catch (error) {
-      console.error("Không thể xử lý ảnh sản phẩm.", error);
-      showToast("error", "Không thể xử lý ảnh. Vui lòng thử lại.");
-    } finally {
-      setIsProcessingImage(false);
-    }
-  };
-
   return (
     <Modal
       open={open}
@@ -132,156 +77,20 @@ export default function ProductFormDialog({
         onSubmit={onSubmit}
         className="grid items-start gap-5 p-4 sm:p-6 lg:grid-cols-[280px_minmax(0,1fr)]"
       >
-        <section className="space-y-4 rounded-2xl border border-primary/10 bg-linear-to-b from-primary-light/70 via-white to-white p-4 shadow-sm sm:p-5 lg:sticky lg:top-0">
-          <div className="relative flex aspect-4/3 w-full items-center justify-center overflow-hidden rounded-xl border border-gray/10 bg-white shadow-inner sm:aspect-square">
-            {form.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={form.image}
-                alt={`Ảnh nhóm sản phẩm ${form.name || "mới"}`}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <div className="flex flex-col items-center gap-2 text-gray">
-                <span className="flex size-14 items-center justify-center rounded-2xl bg-primary-light text-primary">
-                  <FiImage className="size-7" aria-hidden />
-                </span>
-                <span className="text-sm font-medium">Chưa có ảnh</span>
-                <span className="text-xs">Tải ảnh để xem trước tại đây</span>
-              </div>
-            )}
-          </div>
-          <input
-            ref={imageInputRef}
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            className="hidden"
-            onChange={handleImageChange}
-          />
-          <div className="grid gap-2">
-            <Button
-              type="button"
-              variant="outlinePrimary"
-              size="sm"
-              leftIcon={<FiUploadCloud aria-hidden />}
-              disabled={isProcessingImage}
-              onClick={() => imageInputRef.current?.click()}
-              fullWidth
-            >
-              {isProcessingImage
-                ? "Đang xử lý ảnh..."
-                : form.image
-                  ? "Thay ảnh sản phẩm"
-                  : "Tải ảnh lên"}
-            </Button>
-            {form.image ? (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                leftIcon={<FiTrash2 aria-hidden />}
-                disabled={isProcessingImage}
-                onClick={() =>
-                  onChange((current) => ({ ...current, image: null }))
-                }
-                fullWidth
-                className="text-coral hover:bg-coral/5 hover:text-coral"
-              >
-                Xóa ảnh
-              </Button>
-            ) : null}
-          </div>
-          <p className="text-center text-[11px] leading-4 text-gray">
-            JPG, PNG hoặc WebP · Tối đa 10 MB
-          </p>
-        </section>
+        <ProductImagePicker
+          image={form.image}
+          name={form.name}
+          onChange={onChange}
+        />
 
         <div className="min-w-0 space-y-5">
-          <section className="space-y-5 rounded-2xl border border-gray/10 bg-white p-4 shadow-sm sm:p-5">
-            <h2 className="text-sm font-semibold text-black">
-              Thông tin chung
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FormField label="Mã sản phẩm" required>
-                <Input
-                  required
-                  maxLength={32}
-                  value={form.sku}
-                  readOnly={isEditing}
-                  onChange={(event) =>
-                    onChange((current) => ({
-                      ...current,
-                      sku: event.target.value,
-                    }))
-                  }
-                  placeholder="HONG-PHAN"
-                  variant="standard"
-                  className="h-10"
-                />
-              </FormField>
-              <FormField label="Tên nhóm sản phẩm" required>
-                <Input
-                  required
-                  maxLength={120}
-                  value={form.name}
-                  onChange={(event) =>
-                    onChange((current) => ({
-                      ...current,
-                      collection: event.target.value,
-                      name: event.target.value,
-                    }))
-                  }
-                  placeholder="Hồng phấn"
-                  variant="standard"
-                  className="h-10"
-                />
-              </FormField>
-              <FormField label="Chất liệu">
-                <Select
-                  selectionMode="single"
-                  options={yarnOptions}
-                  value={
-                    form.yarnIds[0] !== undefined ? String(form.yarnIds[0]) : ""
-                  }
-                  onChange={(selectedId) =>
-                    onChange((current) => ({
-                      ...current,
-                      yarnIds:
-                        selectedId !== "" &&
-                        yarns.some((yarn) => yarn.id === Number(selectedId))
-                          ? [Number(selectedId)]
-                          : [],
-                    }))
-                  }
-                  ariaLabel="Chất liệu nhóm sản phẩm"
-                  placeholder="Chọn chất liệu"
-                  className="h-10 w-full"
-                  popoverZIndex={110}
-                />
-              </FormField>
-              <FormField label="Kiểu mẫu">
-                <Select
-                  selectionMode="single"
-                  options={patternOptions}
-                  value={form.patternIds[0] ?? ""}
-                  onChange={(patternId) =>
-                    onChange((current) => ({
-                      ...current,
-                      patternIds: patterns.some(
-                        (pattern) => pattern.id === patternId,
-                      )
-                        ? [patternId]
-                        : [],
-                    }))
-                  }
-                  ariaLabel="Kiểu mẫu nhóm sản phẩm"
-                  placeholder="Chọn kiểu mẫu"
-                  className="h-10 w-full"
-                  popoverZIndex={110}
-                />
-              </FormField>
-            </div>
-          </section>
+          <ProductGeneralFields
+            form={form}
+            onChange={onChange}
+            isEditing={isEditing}
+            yarns={yarns}
+            patterns={patterns}
+          />
 
           <section className="space-y-5 rounded-2xl border border-gray/10 bg-white p-4 shadow-sm sm:p-5">
             <div className="flex flex-wrap items-start justify-between gap-2">
@@ -618,42 +427,5 @@ export default function ProductFormDialog({
         </div>
       </form>
     </Modal>
-  );
-}
-
-function readFileAsDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        resolve(reader.result);
-      } else {
-        reject(new Error("Không đọc được dữ liệu ảnh."));
-      }
-    };
-    reader.onerror = () => {
-      reject(reader.error ?? new Error("Không đọc được dữ liệu ảnh."));
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-function FormField({
-  label,
-  required,
-  children,
-}: {
-  label: string;
-  required?: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <label className="block min-w-0 space-y-1.5">
-      <span className="block text-xs font-semibold text-black">
-        {label}
-        {required ? <span className="ml-0.5 text-[#C86F5E]">*</span> : null}
-      </span>
-      {children}
-    </label>
   );
 }
