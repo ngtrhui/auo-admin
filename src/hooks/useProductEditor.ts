@@ -19,7 +19,7 @@ import {
   getAvailableComboSizes,
   getComboStocks,
   getProductBaseSku,
-} from "@/utils/product.utils";
+} from "@/utils/product";
 
 const CATEGORY_SKU_SUFFIX: Record<ProductCategory, string> = {
   Chăn: "CHAN",

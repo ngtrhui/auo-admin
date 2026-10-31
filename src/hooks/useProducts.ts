@@ -12,7 +12,7 @@ import {
   PRODUCT_CATEGORIES,
   type Product,
 } from "@/components/modules/product/product.types";
-import { getProductSize } from "@/utils/product.utils";
+import { getProductSize } from "@/utils/product";
 
 function isProductSize(value: unknown): value is "1m6" | "1m8" {
   return value === "1m6" || value === "1m8";
@@ -121,6 +121,7 @@ function migrateProductList(
 export function useProducts() {
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
   const [storageReady, setStorageReady] = useState(false);
+  const [ready, setReady] = useState(false);
   const canWriteStorage = useRef(true);
 
   useEffect(() => {
@@ -129,7 +130,10 @@ export function useProducts() {
         window.localStorage.getItem(PRODUCTS_STORAGE_KEY) ??
         window.localStorage.getItem(LEGACY_PRODUCTS_STORAGE_KEY);
       if (storedProducts === null) {
-        queueMicrotask(() => setStorageReady(true));
+        queueMicrotask(() => {
+          setStorageReady(true);
+          setReady(true);
+        });
         return;
       }
 
@@ -153,10 +157,12 @@ export function useProducts() {
       queueMicrotask(() => {
         setProducts(productsToLoad);
         setStorageReady(true);
+        setReady(true);
       });
     } catch (error) {
       console.error("Không thể tải danh sách sản phẩm.", error);
       showToast("error", "Không thể tải danh sách sản phẩm đã lưu.");
+      queueMicrotask(() => setReady(true));
     }
   }, []);
 
@@ -172,5 +178,5 @@ export function useProducts() {
     }
   }, [products, storageReady]);
 
-  return { products, setProducts };
+  return { products, setProducts, ready };
 }

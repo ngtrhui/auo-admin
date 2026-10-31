@@ -3,11 +3,17 @@ import type { ReactNode } from 'react';
 export interface ColumnDef<TData> {
   key: keyof TData | string;
   label: ReactNode;
+  /** Adjacent columns with the same key share one header row. */
+  group?: {
+    key: string;
+    label: ReactNode;
+  };
   orderable?: boolean;
   render?: (row: TData) => ReactNode;
   align?: 'left' | 'center' | 'right';
   width?: string | number;
   headerClassName?: string;
+  cellClassName?: string;
   /** Pin column to the left or right edge while horizontally scrolling. */
   pinned?: 'left' | 'right';
 }

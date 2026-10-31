@@ -38,6 +38,7 @@ function isYarnList(value: unknown): value is Yarn[] {
 export function useYarns() {
   const [yarns, setYarns] = useState(INITIAL_YARNS);
   const [storageReady, setStorageReady] = useState(false);
+  const [ready, setReady] = useState(false);
   const canWriteStorage = useRef(true);
 
   useEffect(() => {
@@ -51,13 +52,18 @@ export function useYarns() {
         queueMicrotask(() => {
           setYarns(parsedYarns);
           setStorageReady(true);
+          setReady(true);
         });
       } else {
-        queueMicrotask(() => setStorageReady(true));
+        queueMicrotask(() => {
+          setStorageReady(true);
+          setReady(true);
+        });
       }
     } catch (error) {
       console.error("Không thể tải danh sách chất liệu.", error);
       showToast("error", "Không thể tải danh sách chất liệu đã lưu.");
+      queueMicrotask(() => setReady(true));
     }
   }, []);
 
@@ -73,5 +79,5 @@ export function useYarns() {
     }
   }, [storageReady, yarns]);
 
-  return { yarns, setYarns };
+  return { yarns, setYarns, ready };
 }

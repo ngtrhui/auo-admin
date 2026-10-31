@@ -87,7 +87,7 @@ export const MAIN_NAV_ITEMS: SidebarNavItem[] = [
     label: 'Bảng giá',
     icon: reactNavIcon(FiDollarSign),
     roles: ['ADMIN'],
-    href: '/gia',
+    href: '/bang-gia',
   },
   {
     label: 'Chất liệu',

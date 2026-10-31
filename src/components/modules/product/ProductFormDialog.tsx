@@ -23,7 +23,7 @@ import {
   PRODUCT_CATEGORIES,
   PRODUCT_SIZES,
 } from "@/components/modules/product/product.types";
-import { getAvailableComboSizes } from "@/utils/product.utils";
+import { getAvailableComboSizes } from "@/utils/product";
 
 interface ProductFormDialogProps {
   open: boolean;

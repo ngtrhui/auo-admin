@@ -12,7 +12,7 @@ import {
   getComboStocks,
   getProductGroups,
   getProductSearchIndex,
-} from "@/utils/product.utils";
+} from "@/utils/product";
 
 export function useProductCatalog() {
   const { products, setProducts } = useProducts();

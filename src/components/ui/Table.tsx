@@ -77,6 +77,7 @@ function getBodyCellClassName(
     'px-3 py-1.5 align-middle transition-colors duration-150',
     alignClass,
     tableCellClassName,
+    col.cellClassName,
     getPinnedClassName(col, false),
     isSelected ? 'bg-row-hover group-hover:bg-row-hover' : 'bg-white group-hover:bg-row-hover',
   );
@@ -156,45 +157,167 @@ const Table = <TData,>({
     }
   };
 
+  const hasGroupedHeaders = columns.some((col) => col.group);
+
   const tableEl = (
     <table className={cn('w-full table-auto rounded-lg border-collapse', tableClassName)}>
       <thead>
-        <tr>
-          {columns.map((col) => (
-            <th
-              key={col.key as string}
-              className={cn(
-                'sticky top-0 z-10 px-5 py-3 text-center text-sm font-bold text-primary bg-primary-light whitespace-nowrap',
-                col.orderable ? 'cursor-pointer' : '',
-                headerClassName,
-                col.headerClassName,
-                getPinnedClassName(col as ColumnDef<unknown>, true),
-              )}
-              style={{
-                minWidth: col.width,
-                ...pinnedStyleForCol(col as ColumnDef<unknown>),
-              }}
-              onClick={() => (col.orderable ? handleOrder(col) : undefined)}
-            >
-              <span className="flex items-center gap-1.5 justify-center">
-                {col.label}
-                {col.orderable && (
-                  <TbSortAscending
+        {hasGroupedHeaders ? (
+          <>
+            <tr>
+              {columns.map((col, index) => {
+                if (!col.group) {
+                  return (
+                    <th
+                      key={col.key as string}
+                      rowSpan={2}
+                      className={cn(
+                        'sticky top-0 z-10 px-5 py-3 text-center text-sm font-bold text-primary bg-primary-light whitespace-nowrap',
+                        col.orderable ? 'cursor-pointer' : '',
+                        headerClassName,
+                        col.headerClassName,
+                        getPinnedClassName(col as ColumnDef<unknown>, true),
+                      )}
+                      style={{
+                        minWidth: col.width,
+                        ...pinnedStyleForCol(col as ColumnDef<unknown>),
+                      }}
+                      onClick={() =>
+                        col.orderable ? handleOrder(col) : undefined
+                      }
+                    >
+                      <span className="flex items-center justify-center gap-1.5">
+                        {col.label}
+                        {col.orderable && (
+                          <TbSortAscending
+                            className={cn(
+                              'size-5 shrink-0 transition-transform duration-200 ease-out',
+                              orderBy === col.key
+                                ? cn(
+                                    'text-black',
+                                    orderDirection === 'desc'
+                                      ? 'rotate-180'
+                                      : 'rotate-0',
+                                  )
+                                : 'rotate-0 text-gray/80',
+                            )}
+                          />
+                        )}
+                      </span>
+                    </th>
+                  );
+                }
+
+                if (columns[index - 1]?.group?.key === col.group.key) {
+                  return null;
+                }
+
+                const nextGroupIndex = columns.findIndex(
+                  (groupColumn, groupIndex) =>
+                    groupIndex > index &&
+                    groupColumn.group?.key !== col.group?.key,
+                );
+                const groupLength =
+                  (nextGroupIndex === -1 ? columns.length : nextGroupIndex) -
+                  index;
+
+                return (
+                  <th
+                    key={`${col.group.key}-${index}`}
+                    colSpan={groupLength}
                     className={cn(
-                      'size-5 shrink-0 transition-transform duration-200 ease-out',
-                      orderBy === col.key
-                        ? cn(
-                            'text-black',
-                            orderDirection === 'desc' ? 'rotate-180' : 'rotate-0',
-                          )
-                        : 'rotate-0 text-gray/80',
+                      'sticky top-0 z-10 whitespace-nowrap bg-primary-light px-5 py-3 text-center text-sm font-bold text-primary',
+                      headerClassName,
                     )}
-                  />
+                  >
+                    {col.group.label}
+                  </th>
+                );
+              })}
+            </tr>
+            <tr>
+              {columns.map((col) =>
+                col.group ? (
+                  <th
+                    key={col.key as string}
+                    className={cn(
+                      'sticky top-10 z-10 whitespace-nowrap bg-primary-light px-5 py-2.5 text-center text-sm font-bold text-primary',
+                      headerClassName,
+                      col.headerClassName,
+                    )}
+                    style={{
+                      minWidth: col.width,
+                      ...pinnedStyleForCol(col as ColumnDef<unknown>),
+                    }}
+                    onClick={() =>
+                      col.orderable ? handleOrder(col) : undefined
+                    }
+                  >
+                    <span className="flex items-center justify-center gap-1.5">
+                      {col.label}
+                      {col.orderable && (
+                        <TbSortAscending
+                          className={cn(
+                            'size-5 shrink-0 transition-transform duration-200 ease-out',
+                            orderBy === col.key
+                              ? cn(
+                                  'text-black',
+                                  orderDirection === 'desc'
+                                    ? 'rotate-180'
+                                    : 'rotate-0',
+                                )
+                              : 'rotate-0 text-gray/80',
+                          )}
+                        />
+                      )}
+                    </span>
+                  </th>
+                ) : null,
+              )}
+            </tr>
+          </>
+        ) : (
+          <tr>
+            {columns.map((col) => (
+              <th
+                key={col.key as string}
+                className={cn(
+                  'sticky top-0 z-10 px-5 py-3 text-center text-sm font-bold text-primary bg-primary-light whitespace-nowrap',
+                  col.orderable ? 'cursor-pointer' : '',
+                  headerClassName,
+                  col.headerClassName,
+                  getPinnedClassName(col as ColumnDef<unknown>, true),
                 )}
-              </span>
-            </th>
-          ))}
-        </tr>
+                style={{
+                  minWidth: col.width,
+                  ...pinnedStyleForCol(col as ColumnDef<unknown>),
+                }}
+                onClick={() =>
+                  col.orderable ? handleOrder(col) : undefined
+                }
+              >
+                <span className="flex items-center gap-1.5 justify-center">
+                  {col.label}
+                  {col.orderable && (
+                    <TbSortAscending
+                      className={cn(
+                        'size-5 shrink-0 transition-transform duration-200 ease-out',
+                        orderBy === col.key
+                          ? cn(
+                              'text-black',
+                              orderDirection === 'desc'
+                                ? 'rotate-180'
+                                : 'rotate-0',
+                            )
+                          : 'rotate-0 text-gray/80',
+                      )}
+                    />
+                  )}
+                </span>
+              </th>
+            ))}
+          </tr>
+        )}
       </thead>
       <tbody>
         {isLoading ? (

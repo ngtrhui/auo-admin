@@ -30,6 +30,7 @@ function isPatterns(value: unknown): value is Pattern[] {
 export function usePatterns() {
   const [patterns, setPatterns] = useState(INITIAL_PATTERNS);
   const [storageReady, setStorageReady] = useState(false);
+  const [ready, setReady] = useState(false);
   const canWriteStorage = useRef(true);
 
   useEffect(() => {
@@ -49,12 +50,14 @@ export function usePatterns() {
     } catch (error) {
       console.error("Không thể tải danh sách kiểu mẫu.", error);
       showToast("error", "Không thể tải danh sách kiểu mẫu đã lưu.");
+      queueMicrotask(() => setReady(true));
       return;
     }
 
     queueMicrotask(() => {
       setPatterns(loadedPatterns);
       setStorageReady(true);
+      setReady(true);
     });
   }, []);
 
@@ -73,5 +76,5 @@ export function usePatterns() {
     }
   }, [patterns, storageReady]);
 
-  return { patterns, setPatterns };
+  return { patterns, setPatterns, ready };
 }
