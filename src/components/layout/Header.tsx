@@ -6,12 +6,18 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import { Button } from "@/components/ui/Button";
 // import { HeaderNotifications } from '@/components/layout/HeaderNotifications';
 import { HeaderUserMenu } from "@/components/layout/HeaderUserMenu";
+// import { usePackageFormBreadcrumbLabel } from "@/hooks/usePackageFormBreadcrumbLabel";
 import { getBreadcrumbItems } from "@/utils/breadcrumbFromPath";
 import { SidebarMobile } from "@/components/layout/SidebarMobile";
+import { useSidebarUIStore } from "@/stores/sidebar-ui.store";
 import { TbMenu2 } from "react-icons/tb";
+import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
 
 export function Header() {
   const pathname = usePathname();
+  // const packageFormLabel = usePackageFormBreadcrumbLabel();
+  const isSidebarCollapsed = useSidebarUIStore((state) => state.isCollapsed);
+  const toggleSidebar = useSidebarUIStore((state) => state.toggleCollapsed);
   const breadcrumbItems = useMemo(
     () => getBreadcrumbItems(pathname),
     [pathname],
@@ -36,6 +42,7 @@ export function Header() {
             <Breadcrumb
               items={breadcrumbItems}
               truncateLast
+              // maxVisible={2}
               className="min-w-0"
             />
           </div>
@@ -47,7 +54,25 @@ export function Header() {
         </div>
 
         {/* Desktop */}
-        <div className="hidden h-16 items-center gap-3 px-6 xl:flex lg:px-8">
+        <div className="hidden h-16 items-center gap-3 px-6 xl:flex">
+          <Button
+            variant="transparent"
+            onClick={toggleSidebar}
+            aria-label={
+              isSidebarCollapsed ? "Mở rộng thanh bên" : "Thu gọn thanh bên"
+            }
+            title={
+              isSidebarCollapsed ? "Mở rộng thanh bên" : "Thu gọn thanh bên"
+            }
+            className="size-8 shrink-0 p-0"
+          >
+            {isSidebarCollapsed ? (
+              <LuPanelLeftOpen className="size-5 text-neutral-400" />
+            ) : (
+              <LuPanelLeftClose className="size-5 text-neutral-400" />
+            )}
+          </Button>
+
           <div className="min-w-0 flex-1">
             <Breadcrumb
               items={breadcrumbItems}
