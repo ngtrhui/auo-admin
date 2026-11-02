@@ -36,7 +36,11 @@ function findFirstHref(items: SidebarNavItem[]): string | undefined {
   return undefined;
 }
 
-function getExtraSegments(pathname: string, baseHref: string): BreadcrumbItem[] {
+function getExtraSegments(
+  pathname: string,
+  baseHref: string,
+  leafLabel?: string,
+): BreadcrumbItem[] {
   const normalizedBase = baseHref === '/' ? '' : baseHref;
   if (!pathname.startsWith(normalizedBase)) return [];
 
@@ -52,11 +56,21 @@ function getExtraSegments(pathname: string, baseHref: string): BreadcrumbItem[] 
     if (segments[0] === 'preview') {
       return [{ label: 'Xem trước', path: pathname }];
     }
-    return [{ label: 'Chỉnh sửa', path: pathname }];
+    return [{ label: leafLabel || 'Chỉnh sửa', path: pathname }];
   }
 
   if (baseHref === '/seo-links/header' || baseHref === '/seo-links/footer') {
     return [];
+  }
+
+  const isPackageFormPage =
+    baseHref === '/settings/packages' || baseHref === '/settings/advertisement-packages';
+
+  if (isPackageFormPage) {
+    if (segments[0] === 'new') {
+      return [{ label: 'Thêm mới', path: `${baseHref}/new` }];
+    }
+    return [{ label: leafLabel || 'Chỉnh sửa', path: pathname }];
   }
 
   const last = segments[segments.length - 1];
@@ -65,7 +79,10 @@ function getExtraSegments(pathname: string, baseHref: string): BreadcrumbItem[] 
   return [{ label: decodeURIComponent(last), path: pathname }];
 }
 
-export function getBreadcrumbItems(pathname: string): BreadcrumbItem[] {
+export function getBreadcrumbItems(
+  pathname: string,
+  options?: { leafLabel?: string },
+): BreadcrumbItem[] {
   if (pathname === '/') {
     return [DASHBOARD];
   }
@@ -89,5 +106,5 @@ export function getBreadcrumbItems(pathname: string): BreadcrumbItem[] {
     }
   }
 
-  return [...items, ...getExtraSegments(pathname, leafHref)];
+  return [...items, ...getExtraSegments(pathname, leafHref, options?.leafLabel)];
 }

@@ -2,6 +2,7 @@ import type { IconType } from 'react-icons';
 import { FiDollarSign, FiPackage, FiUser } from "react-icons/fi";
 import { TbGridPattern } from "react-icons/tb";
 import { PiYarn } from "react-icons/pi";
+import { LuClipboardList } from "react-icons/lu";
 import type { AdminPendingCategory } from '@/types/pending-badges';
 import type { UserRole } from '@/types/user';
 
@@ -100,6 +101,12 @@ export const MAIN_NAV_ITEMS: SidebarNavItem[] = [
     icon: reactNavIcon(TbGridPattern),
     roles: ['ADMIN'],
     href: '/kieu-mau'
+  },
+  {
+    label: 'Đơn hàng',
+    icon: reactNavIcon(LuClipboardList),
+    roles: ['ADMIN'],
+    href: '/don-hang'
   },
 ];
 

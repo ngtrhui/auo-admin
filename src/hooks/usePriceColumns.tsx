@@ -45,7 +45,7 @@ export function usePriceColumns({
       {
         key: "name",
         label: "Sản phẩm",
-        width: 220,
+        width: 150,
         pinned: "left",
         align: "left",
         headerClassName: "border-r border-slate-200 text-left",
@@ -95,9 +95,6 @@ export function usePriceColumns({
             <div>
               <span className="block text-sm font-semibold text-slate-800">
                 {product.name}
-              </span>
-              <span className="mt-1 block text-xs text-slate-400">
-                {product.category}
               </span>
             </div>
           </div>
@@ -199,7 +196,9 @@ export function usePriceColumns({
             <PriceInput
               disabled={!isReady}
               label={`Giá ${product.name} - ${material.group.label} / ${material.pattern}`}
-              onChange={(value) => onPriceChange(product.id, material.id, value)}
+              onChange={(value) =>
+                onPriceChange(product.id, material.id, value)
+              }
               value={draft.products[product.id]?.[material.id] ?? ""}
             />
           ),
