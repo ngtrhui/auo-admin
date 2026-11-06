@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { Button } from "@/components/ui/Button";
-// import { HeaderNotifications } from '@/components/layout/HeaderNotifications';
+import { HeaderNotifications } from '@/components/layout/HeaderNotifications';
 import { HeaderUserMenu } from "@/components/layout/HeaderUserMenu";
 // import { usePackageFormBreadcrumbLabel } from "@/hooks/usePackageFormBreadcrumbLabel";
 import { getBreadcrumbItems } from "@/utils/breadcrumbFromPath";
@@ -48,7 +48,7 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            {/* <HeaderNotifications /> */}
+            <HeaderNotifications />
             <HeaderUserMenu />
           </div>
         </div>
@@ -82,7 +82,7 @@ export function Header() {
           </div>
 
           <div className="ml-auto flex shrink-0 items-center gap-2">
-            {/* <HeaderNotifications /> */}
+            <HeaderNotifications />
 
             <span className="h-6 w-px bg-gray/20" aria-hidden />
 

@@ -70,7 +70,7 @@ export interface DeleteNotificationResult {
 
 export type SocketNotificationPayload = {
   notificationId?: string;
-  type: NotificationType;
+  type: string;
   title: string;
   body: string;
   isRead: boolean;
