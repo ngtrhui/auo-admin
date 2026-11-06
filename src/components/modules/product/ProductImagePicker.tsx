@@ -44,11 +44,42 @@ export default function ProductImagePicker({
     setIsProcessing(true);
     try {
       const optimizedImage = await finalizeImageForUpload(file);
-      const imageData = await readFileAsDataUrl(optimizedImage);
-      onChange((current) => ({ ...current, image: imageData }));
+      const uploadData = new FormData();
+      uploadData.append("file", optimizedImage);
+
+      const response = await fetch("/api/r2/product-image", {
+        method: "POST",
+        body: uploadData,
+      });
+      const result: unknown = await response.json();
+      const imageUrl =
+        result !== null &&
+        typeof result === "object" &&
+        "url" in result &&
+        typeof result.url === "string"
+          ? result.url
+          : null;
+
+      if (!response.ok || !imageUrl) {
+        const message =
+          result !== null &&
+          typeof result === "object" &&
+          "message" in result &&
+          typeof result.message === "string"
+            ? result.message
+            : "Không thể tải ảnh lên.";
+        throw new Error(message);
+      }
+
+      onChange((current) => ({ ...current, image: imageUrl }));
     } catch (error) {
-      console.error("Không thể xử lý ảnh sản phẩm.", error);
-      showToast("error", "Không thể xử lý ảnh. Vui lòng thử lại.");
+      console.error("Không thể tải ảnh sản phẩm lên R2.", error);
+      showToast(
+        "error",
+        error instanceof Error
+          ? error.message
+          : "Không thể tải ảnh lên. Vui lòng thử lại.",
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -92,7 +123,7 @@ export default function ProductImagePicker({
           fullWidth
         >
           {isProcessing
-            ? "Đang xử lý ảnh..."
+            ? "Đang xử lý và tải ảnh..."
             : image
               ? "Thay ảnh sản phẩm"
               : "Tải ảnh lên"}
@@ -119,21 +150,4 @@ export default function ProductImagePicker({
       </p>
     </section>
   );
-}
-
-function readFileAsDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        resolve(reader.result);
-      } else {
-        reject(new Error("Không đọc được dữ liệu ảnh."));
-      }
-    };
-    reader.onerror = () => {
-      reject(reader.error ?? new Error("Không đọc được dữ liệu ảnh."));
-    };
-    reader.readAsDataURL(file);
-  });
 }
