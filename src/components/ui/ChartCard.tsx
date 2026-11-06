@@ -27,6 +27,8 @@ export type ChartLabelMode = 'date' | 'time';
 export type ChartCardProps = {
   title: string;
   description?: string;
+  seriesLabels?: Partial<Record<SeriesKey, string>>;
+  seriesColors?: Partial<Record<SeriesKey, string>>;
   headerRight?: React.ReactNode;
   toolbar?: React.ReactNode;
   data: TimeChartPoint[];
@@ -155,10 +157,14 @@ const CustomTooltip = ({
   active,
   payload,
   label,
+  seriesLabels,
+  seriesColors,
 }: {
   active?: boolean;
   payload?: TooltipPayloadItem[];
   label?: string;
+  seriesLabels?: Partial<Record<SeriesKey, string>>;
+  seriesColors?: Partial<Record<SeriesKey, string>>;
 }) => {
   if (!active || !payload?.length) return null;
 
@@ -181,9 +187,14 @@ const CustomTooltip = ({
           >
             <div
               className="h-2 w-2 rounded-full"
-              style={{ backgroundColor: series?.color ?? '#9CA3AF' }}
+              style={{
+                backgroundColor:
+                  seriesColors?.[key] ?? series?.color ?? '#9CA3AF',
+              }}
             />
-            <span className="text-gray">{series?.label ?? key}</span>
+            <span className="text-gray">
+              {seriesLabels?.[key] ?? series?.label ?? key}
+            </span>
             <div className={cn('font-semibold text-black')}>{formatNumber(item.value || 0)}</div>
           </div>
         );
@@ -193,7 +204,17 @@ const CustomTooltip = ({
 };
 
 const ChartCard: React.FC<ChartCardProps> = React.memo(
-  ({ title, description, headerRight, toolbar, data, labelMode = 'date', className }) => {
+  ({
+    title,
+    description,
+    seriesLabels,
+    seriesColors,
+    headerRight,
+    toolbar,
+    data,
+    labelMode = 'date',
+    className,
+  }) => {
     const chartData = useMemo(
       () =>
         data.map((point) => ({
@@ -237,9 +258,13 @@ const ChartCard: React.FC<ChartCardProps> = React.memo(
               >
                 <div
                   className="size-3 rounded-full"
-                  style={{ backgroundColor: series.color }}
+                  style={{
+                    backgroundColor: seriesColors?.[series.key] ?? series.color,
+                  }}
                 />
-                <span className="text-sm font-medium text-black">{series.label}</span>
+                <span className="text-sm font-medium text-black">
+                  {seriesLabels?.[series.key] ?? series.label}
+                </span>
               </div>
             ))}
           </div>
@@ -286,7 +311,12 @@ const ChartCard: React.FC<ChartCardProps> = React.memo(
               />
 
               <Tooltip
-                content={<CustomTooltip />}
+                content={
+                  <CustomTooltip
+                    seriesLabels={seriesLabels}
+                    seriesColors={seriesColors}
+                  />
+                }
                 cursor={{
                   stroke: '#D1D5DB',
                   strokeDasharray: '5 5',
@@ -298,12 +328,12 @@ const ChartCard: React.FC<ChartCardProps> = React.memo(
                   key={series.key}
                   type="monotone"
                   dataKey={series.key}
-                  stroke={series.color}
+                  stroke={seriesColors?.[series.key] ?? series.color}
                   strokeWidth={3}
                   dot={false}
                   activeDot={{
                     r: 6,
-                    fill: series.color,
+                    fill: seriesColors?.[series.key] ?? series.color,
                     stroke: '#fff',
                     strokeWidth: 3,
                   }}

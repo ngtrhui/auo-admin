@@ -5,6 +5,7 @@ import { PiYarn } from "react-icons/pi";
 import { LuClipboardList } from "react-icons/lu";
 import type { AdminPendingCategory } from '@/types/pending-badges';
 import type { UserRole } from '@/types/user';
+import { TbLayoutDashboard } from "react-icons/tb";
 
 export type SidebarReactIcon = {
   type: 'react';
@@ -60,7 +61,7 @@ export const MAIN_NAV_ITEMS: SidebarNavItem[] = [
   {
     label: 'Bảng điều khiển',
     href: '/',
-    icon: imageNavIcon('/images/icons/icon_home.webp'),
+    icon: reactNavIcon(TbLayoutDashboard),
     roles: ['ADMIN'],
   },
   // {
